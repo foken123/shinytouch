@@ -19,4 +19,11 @@ From this point you can attempt running the application (see Runtime for monitor
 Eventually it should form a green box around the fingertips when it is touching and just have the dots if it's hovering. Adjust the ranges until it works most of the time.
 
 = Runtime =
-When running the application, it needs to be configured to the position of the webcam.
+When running the application, it needs to be configured to the position of the webcam. This is somewhat straightforward. Follow the instructions from the command line and press the c key. Then click the top left corner of the monitor (the glowing screen part), then the bottom left, bottom right and finally top right. After that the command line will give you a block of code that you can copy and paste over the similar looking variable declarations (under colorReflectionDiff() ). This is not necessary, but will save you the hassle of recalibrating every time you launch the application.
+
+= Usage =
+
+Follow the directions.
+
+= Sorry =
+If you realize its not actually worth it, I'm sorry. I can't give your time back, but hey, I wasted all my time doing this too.
