@@ -20,26 +20,14 @@ draw2 = ImageDraw.Draw(canvas)
 touchconf = False
 camera = highgui.cvCreateCameraCapture(0)
 
+f = open('shinyconf.py', 'r')
+exec(f.read())
+f.close()
 
-rmax = -255
-rmin = 255
-gmax = -255
-gmin = 255
-bmax = -255
-bmin = 255
+w = 0
+ytr = 0
+ybr = 0
 
-xs = 0
-xe = 1
-
-tl = 0
-bl = 1
-
-tr = 0
-br = 1
-
-w = xe-xs
-ytr = float(tl-tr)/float(w);
-ybr = float(bl-br)/float(w);
 
 
 def get_image(dolog = False, getpix = False):
@@ -131,6 +119,7 @@ def get_image(dolog = False, getpix = False):
     else:
       return im
 
+
 def saveconfig():
   conf = """#this is the perspective distortion configuration section
 xs = """+str(xs)+"""
@@ -150,27 +139,24 @@ gmin = """+str(gmin)+"""
 gmax = """+str(gmax)+"""
 
 bmin = """+str(bmin)+"""
-bmax = """+str(bmax)
+bmax = """+str(bmax)+"""
+
+#DO NOT EDIT BEYOND THIS POINT
+w = xe-xs
+ytr = float(tl-tr)/float(w);
+ybr = float(bl-br)/float(w);"""
   print conf
   f = open('shinyautoconf.py', 'w')
   f.write(conf)
   f.close()
   print "Wrote configuration to file shinyautoconf.py"
 
-
-
-f = open('shinyconf.py', 'r')
-exec(f.read())
-f.close()
-
-
-if(os.path.exists("shinyautoconf.py")):
+if os.path.exists("shinyautoconf.py"):
   f = open('shinyautoconf.py', 'r')
   exec(f.read())
   f.close()
 else:
   saveconfig()
-
 
 
 fps = 60.0

@@ -1,19 +1,24 @@
 #this is the perspective distortion configuration section
-xs = 199
-xe = 296
+xs = 203
+xe = 285
 
-tl = 161
-bl = 393
+tl = 164
+bl = 391
 
-tr = 29
-br = 466
+tr = 65
+br = 450
 
 #this is the color detection configuration section
-rmin = 163
-rmax = 255
+rmin = 255
+rmax = -255
 
-gmin = 119
-gmax = 204
+gmin = 255
+gmax = -255
 
-bmin = 112
-bmax = 202
+bmin = 255
+bmax = -255
+
+#DO NOT EDIT BEYOND THIS POINT
+w = xe-xs
+ytr = float(tl-tr)/float(w);
+ybr = float(bl-br)/float(w);
