@@ -197,6 +197,8 @@ while True:
             else:
               buildrange = True
               print "Enabled Color Range Building"
+          elif event.unicode == "f":
+            pygame.display.toggle_fullscreen()
           elif event.unicode == "t":
             if mode == "transform":
               mode = ""
