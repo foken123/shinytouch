@@ -7,6 +7,8 @@ import itertools
 import opencv
 #this is important for capturing/displaying images
 from opencv import highgui 
+import os
+
 mode = "image"
 calibrate = False
 box = 10
@@ -18,14 +20,22 @@ draw2 = ImageDraw.Draw(canvas)
 touchconf = False
 camera = highgui.cvCreateCameraCapture(0)
 
-f = open('shinyconf.py', 'r')
-exec(f.read())
-f.close()
 
-f = open('shinyautoconf.py', 'r')
-exec(f.read())
-f.close()
+rmax = -255
+rmin = 255
+gmax = -255
+gmin = 255
+bmax = -255
+bmin = 255
 
+xs = 0
+xe = 1
+
+tl = 0
+bl = 1
+
+tr = 0
+br = 1
 
 w = xe-xs
 ytr = float(tl-tr)/float(w);
@@ -121,7 +131,6 @@ def get_image(dolog = False, getpix = False):
     else:
       return im
 
-
 def saveconfig():
   conf = """#this is the perspective distortion configuration section
 xs = """+str(xs)+"""
@@ -147,6 +156,22 @@ bmax = """+str(bmax)
   f.write(conf)
   f.close()
   print "Wrote configuration to file shinyautoconf.py"
+
+
+
+f = open('shinyconf.py', 'r')
+exec(f.read())
+f.close()
+
+
+if(os.path.exists("shinyautoconf.py")):
+  f = open('shinyautoconf.py', 'r')
+  exec(f.read())
+  f.close()
+else:
+  saveconfig()
+
+
 
 fps = 60.0
 pygame.init()

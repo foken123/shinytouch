@@ -1,9 +1,3 @@
-rmax = -255
-rmin = 255
-gmax = -255
-gmin = 255
-bmax = -255
-bmin = 255
 
 
 lastx = 0
@@ -28,7 +22,7 @@ def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incremente
   xt = 0
   yt = 0
   #while colorDiffGrade(pix[x+xt,y+yt],pix[x+xt+xi,y+yt+yi]) < r: #use a more fine tuned function
-  while colorTriDiff(pix[x+xt+xi,y+yt+yi],pix[x+xt,y+yt],pix[x,y-smarty]) < 0:
+  while colorTriDiff(pix[x+xt+xi,y+yt+yi],pix[x,max(0,y-smarty)],pix[x+xt,y+yt]) < 0:
     pix[x+xt,y+yt] = (255,255,255,255)
     xt += xi
     yt += yi
@@ -105,6 +99,8 @@ def colorTest(x, y, dolog = False):
         if b > -25 and b < 5:
           return True
     return False
+    
+#this project is a failure
 
 def colorDiffGrade(c,d):
   r = c[0]-d[0]
