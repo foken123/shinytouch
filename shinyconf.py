@@ -24,11 +24,11 @@ testmode = "reflection"
 #  return False
 
 
-def measureLength(x,y,xi=0,yi=1,r=25): #start x, start y, x incrementer, y incrementer
+def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incrementer, y incrementer
   xt = 0
   yt = 0
   #while colorDiffGrade(pix[x+xt,y+yt],pix[x+xt+xi,y+yt+yi]) < r: #use a more fine tuned function
-  while colorTriDiff(pix[x+xt+xi,y+yt+yi],pix[x+xt,y+yt],pix[x,y-30]) < 0: #use a more fine tuned function
+  while colorTriDiff(pix[x+xt+xi,y+yt+yi],pix[x+xt,y+yt],pix[x,y-smarty]) < 0:
     pix[x+xt,y+yt] = (255,255,255,255)
     xt += xi
     yt += yi
@@ -40,7 +40,7 @@ def colorTriDiff(c, f, s):
   return (valueTriDiff(c[0], f[0], s[0]) + valueTriDiff(c[1], f[1], s[1]) + valueTriDiff(c[2], f[2], s[2]))/3.0
   
 def valueTriDiff(compare, first, second):
-  return abs(first - compare) - abs(second - compare)
+  return abs(abs(first - compare) - abs(second - compare))
 
 def colorTargetMatch(c):
   if c[0] < rmax and c[0] > rmin: #red
@@ -58,8 +58,8 @@ def colorTest(x, y, dolog = False):
   
   sumfs = 0
   for xpix in range(8,15):
-    flen =  measureLength(x-xpix,y)+abs(measureLength(x-xpix,y-1,yi=-1))
-    slen =  measureLength(x+xpix,y,r=10)+abs(measureLength(x+xpix,y-1,yi=-1,r=10))
+    flen =  measureLength(x-xpix,y)+abs(measureLength(x-xpix,y-1,yi=-1,smarty=-30))
+    slen =  measureLength(x+xpix,y,r=10)+abs(measureLength(x+xpix,y-1,yi=-1,r=10,smarty=-30))
     
     #print flen-slen
     sumfs += abs(flen-slen)
