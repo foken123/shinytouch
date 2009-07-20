@@ -46,7 +46,7 @@ def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incremente
     xt += xi
     yt += yi
     if xt + x < 5 or xt + x > 630 or yt+y < 5 or yt+y > 470:
-      return 0
+      return yt+xt
   return yt+xt
 
 def colorTriDiff(c, f, s):
@@ -62,9 +62,10 @@ def colorTargetMatch(c):
         return True
   return False
 
-def colorTest(x, y, dolog = False):
+def colorTest2(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix
-  
+  if buildrange == True:
+    return False
   
   c = pix[x+5,y]
   d = pix[x+5,y-10]
@@ -77,54 +78,66 @@ def colorTest(x, y, dolog = False):
   for xpix in range(6,15):
     flen =  measureLength(x-xpix,y)+abs(measureLength(x-xpix,y-1,yi=-1,smarty=-30))
     slen =  measureLength(x+xpix,y)+abs(measureLength(x+xpix,y-1,yi=-1,smarty=-30))
-    pix[x-xpix,y+30] = (255,0,255)
-    pix[x-xpix,y-30] = (255,0,255)
-    pix[x+xpix,y+30] = (255,0,255)
-    pix[x+xpix,y-30] = (255,0,255)
+    if y < 445 and y > 35:
+      pix[x-xpix,y+30] = (255,0,255)
+      pix[x-xpix,y-30] = (255,0,255)
+      pix[x+xpix,y+30] = (255,0,255)
+      pix[x+xpix,y-30] = (255,0,255)
+      
     #print flen-slen
     sumfs += abs(flen-slen)
     #if abs(flen-slen) > 20:
     #  return False
-  print sumfs / float(6-15)
-  if abs(sumfs / (6-15)) > 10:
+  print sumfs / abs(float(6-15))
+  if sumfs / abs(float(6-15)) > 10:
     return False
   return True
-  
+
+#divide as floats and return 0 if divide by zero
+def fdivide(a,b):
+  if b == 0:
+    return 1.0
+  return float(a)/float(b)
+
+def colorTest(x, y, dolog = False):
+  global imv, testmode, buildrange, draw, pix
   if buildrange == True:
     return False
-  if testmode == "shadow":
-    dAV = colorDiffAverage(c,d)
-    draw.text((x,y), str(dAV), fill=(0,0,0))
-    if dAV < -20:
-      return True
-    return False
-  else:
-    if dolog == True:
-      irIM = float(c[0]-d[0])/float(t[0]-d[0])
-      igIM = float(c[1]-d[1])/float(t[1]-d[1])
-      ibIM = float(c[2]-d[2])/float(t[2]-d[2])
-      print "Ideal rIM",irIM
-      print "Ideal gIM",igIM
-      print "Ideal bIM",ibIM
-      print "Ideal total IM",(irIM+igIM+ibIM)/4.0
-    sm = 1.0-imv
-    ra = t[0]*imv + d[0]*sm
-    ga = t[1]*imv + d[1]*sm
-    ba = t[2]*imv + d[2]*sm
-    r = c[0] - ra
-    g = c[1] - ga
-    b = c[2] - ba
-    draw.line(((x,y),(x+40,y)), fill=(ra,ga,ba))
-    #draw.text((x,y), str(int(r))+","+str(int(g))+","+str(int(b)), fill=(0,0,0))
-    if dolog == True:
-      print "Red",r
-      print "Green",g
-      print "Blue",b
-    if r > -55 and r < -20:
-      if g > -20 and g < 10:
-        if b > -25 and b < 5:
-          return True
-    return False
+  c = pix[x+15,y]
+  d = pix[x+5,y-10]
+  t = pix[x-5,y]
+  
+  irIM = fdivide(c[0]-d[0],t[0]-d[0])
+  igIM = fdivide(c[1]-d[1],t[1]-d[1])
+  ibIM = fdivide(c[2]-d[2],t[2]-d[2])
+  idTL = (irIM+igIM+ibIM)/3.0
+  
+  print "Ideal rIM",irIM
+  print "Ideal gIM",igIM
+  print "Ideal bIM",ibIM
+  print "Ideal total IM",idTL
+  sm = 1.0-imv
+  ra = t[0]*imv + d[0]*sm
+  ga = t[1]*imv + d[1]*sm
+  ba = t[2]*imv + d[2]*sm
+  r = c[0] - ra
+  g = c[1] - ga
+  b = c[2] - ba
+  #draw.line(((x,y),(x+40,y)), fill=(ra,ga,ba))
+  draw.text((x,y), str(max(0,min(100,int(idTL*100)))), fill=(0,0,0))
+  if dolog == True:
+    print "Red",r
+    print "Green",g
+    print "Blue",b
+  #if r > -55 and r < -20:
+  #  if g > -20 and g < 10:
+  #    if b > -25 and b < 5:
+  #      return True
+  
+  pix[x+15,y] = (255,255,255,255)
+  pix[x+5,y-10] = (255,0,255,255)
+  pix[x-5,y] = (0,0,255,255)
+  return False
     
 #this project is a failure
 

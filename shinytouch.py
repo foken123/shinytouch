@@ -87,13 +87,15 @@ while True:
           touchconf = False
           if event.button == 3:
             dolog = True
-            print generate_autoconf()
           elif event.button == 2:
             canvas = Image.new("RGB", (640,480))
             canvaspix = canvas.load()
             draw2 = ImageDraw.Draw(canvas)
             print "Reset Canvas"
+            execfile("tracking.py")
+            print "Loaded finger tracker core"
             execfile("reflection.py")
+            print "Loaded Reflection Detection Algorithm"
             execfile("autoconf.py")
             print "Loaded Automatic Generated Configuration"
           elif event.button == 1 and calibrate == False and buildrange == True:
