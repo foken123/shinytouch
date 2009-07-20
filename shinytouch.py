@@ -13,6 +13,7 @@ mode = "image"
 calibrate = False
 box = 10
 buildrange = False
+imsrc = "cam"
 
 canvas = Image.new("RGB", (640,480))
 canvaspix = canvas.load()
@@ -31,13 +32,15 @@ ybr = 0
 
 
 def get_image(dolog = False, getpix = False):
-    global im, pix, draw
-    im = highgui.cvQueryFrame(camera)
-    # Add the line below if you need it (Ubuntu 8.04+)
-    im = opencv.cvGetMat(im)
-    #convert Ipl image to PIL image
-    im = opencv.adaptors.Ipl2PIL(im)
-
+    global im, pix, draw, imsrc
+    if imsrc == "cam":
+      im = highgui.cvQueryFrame(camera)
+      # Add the line below if you need it (Ubuntu 8.04+)
+      im = opencv.cvGetMat(im)
+      #convert Ipl image to PIL image
+      im = opencv.adaptors.Ipl2PIL(im)
+    else:
+      im = Image.open(imsrc)
     pix = im.load()
     draw = ImageDraw.Draw(im)
 
