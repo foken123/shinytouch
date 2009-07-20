@@ -77,11 +77,6 @@ def get_image(dolog = False, getpix = False):
       vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
       yd = ((yp - disttop)/vwid) * 480
       draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
-    else:
-      #print "fayle"
-      pix[xp+5,oy-10] = (255,255,255,255)
-      pix[xp+5,yp] = (255,0,255,255)
-      pix[xp-5,yp] = (0,0,255,255)
   if mode == "draw":
     return canvas
   elif mode == "transform":
