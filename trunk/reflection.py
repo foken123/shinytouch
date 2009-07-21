@@ -104,7 +104,7 @@ def fdivide(a,b):
   return float(a)/float(b)
 
 #OMFG THIS ONE IS BRILLIANT
-def colorTestHSV(x, y, dolog = False):
+def colorTest(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix
   if buildrange == True:
     return False
@@ -190,7 +190,7 @@ def colorTest3(x, y, dolog = False):
 
 
 
-def colorTest(x, y, dolog = False):
+def colorTestWHATEVER(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix
   if buildrange == True:
     return False
