@@ -32,7 +32,7 @@ imsrc = "cam"
 #  return False
 
 
-
+import colorsys
   
 
 def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incrementer, y incrementer
@@ -62,7 +62,7 @@ def colorTargetMatch(c):
         return True
   return False
 
-def colorTest2(x, y, dolog = False):
+def colorTest(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix
   if buildrange == True:
     return False
@@ -89,6 +89,10 @@ def colorTest2(x, y, dolog = False):
     #if abs(flen-slen) > 20:
     #  return False
   print sumfs / abs(float(6-15))
+  
+  
+  draw.line(((100, 20), (100+sumfs, 20)), fill=(255,0,0), width=10)
+  
   if sumfs / abs(float(6-15)) > 10:
     return False
   return True
@@ -99,44 +103,89 @@ def fdivide(a,b):
     return 1.0
   return float(a)/float(b)
 
-def colorTest(x, y, dolog = False):
+#OMFG THIS ONE IS BRILLIANT
+def colorTestHSV(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix
   if buildrange == True:
     return False
-  c = pix[x+15,y]
-  d = pix[x+5,y-10]
-  t = pix[x-5,y]
+  c = pix[x+10,y] #reflection
+  d = pix[x+10,y-15] #background
+  
+  cdg = 200 *(abs(hueDiffGrade(c,d)))
+  
+  if dolog == True:
+    print "Finger ",t
+    print "Reflection ",c
+    print "Background ",d
+    
+  pix[x+10,y] = (255,255,255,255)
+  pix[x+10,y-15] = (255,0,255,255)
+
+  draw.line(((0, 20), (cdg, 20)), fill=(255,0,0), width=10)
+  draw.rectangle(((40,0),(80,40)), fill=c)
+  draw.rectangle(((80,0),(120,40)), fill=d)
+
+  draw.text((0,20), str(cdg), fill=(0,0,0))
+
+  if cdg > 25:
+    return True
+  
+  return False
+  
+
+def colorTest3(x, y, dolog = False):
+  global imv, testmode, buildrange, draw, pix
+  if buildrange == True:
+    return False
+  c = pix[x+10,y] #reflection
+  d = pix[x+10,y-15] #background
+  t = pix[x-5,y] #color of the finger
   
   irIM = fdivide(c[0]-d[0],t[0]-d[0])
   igIM = fdivide(c[1]-d[1],t[1]-d[1])
   ibIM = fdivide(c[2]-d[2],t[2]-d[2])
-  idTL = (irIM+igIM+ibIM)/3.0
   
-  print "Ideal rIM",irIM
-  print "Ideal gIM",igIM
-  print "Ideal bIM",ibIM
-  print "Ideal total IM",idTL
-  sm = 1.0-imv
-  ra = t[0]*imv + d[0]*sm
-  ga = t[1]*imv + d[1]*sm
-  ba = t[2]*imv + d[2]*sm
-  r = c[0] - ra
-  g = c[1] - ga
-  b = c[2] - ba
+  pix[x+10,y] = (255,255,255,255)
+  pix[x+10,y-15] = (255,0,255,255)
+  pix[x-5,y] = (0,0,255,255)
+  
+  
+  
   #draw.line(((x,y),(x+40,y)), fill=(ra,ga,ba))
-  draw.text((x,y), str(max(0,min(100,int(idTL*100)))), fill=(0,0,0))
+  
   if dolog == True:
-    print "Red",r
-    print "Green",g
-    print "Blue",b
+    print "Finger ",t
+    print "Reflection ",c
+    print "Background ",d
+    print "Ideal rIM",irIM
+    print "Ideal gIM",igIM
+    print "Ideal bIM",ibIM
   #if r > -55 and r < -20:
   #  if g > -20 and g < 10:
   #    if b > -25 and b < 5:
   #      return True
   
-  pix[x+15,y] = (255,255,255,255)
-  pix[x+5,y-10] = (255,0,255,255)
+  
+  draw.rectangle(((0,0),(40,40)), fill=t)
+  draw.rectangle(((40,0),(80,40)), fill=c)
+  draw.rectangle(((80,0),(120,40)), fill=d)
+  
+  
+  draw.text((0,20), str(int(irIM*10000)/100), fill=(0,0,0))
+  draw.text((40,20), str(int(igIM*10000)/100), fill=(0,0,0))
+  draw.text((80,20), str(int(ibIM*10000)/100), fill=(0,0,0))
+  
+  draw.line(((100, 10), (100+int(irIM*10000)/100, 10)), fill=(255,0,0), width=10)
+  draw.line(((100, 30), (100+int(igIM*10000)/100, 30)), fill=(0,255,0), width=10)
+  draw.line(((100, 50), (100+int(ibIM*10000)/100, 50)), fill=(0,0,255), width=10)
+  
+  pix[x+10,y] = (255,255,255,255)
+  pix[x+10,y-15] = (255,0,255,255)
   pix[x-5,y] = (0,0,255,255)
+  
+  if irIM > 0.1:
+    return True
+  
   return False
     
 #this project is a failure
@@ -147,6 +196,11 @@ def colorDiffGrade(c,d):
   b = c[2]-d[2]
   return abs(r) + abs(g) + abs(b)
 
+def hueDiffGrade(c, d):
+  chsv = colorsys.rgb_to_hsv(c[0]/255.0, c[1]/255.0, c[2]/255.0)
+  dhsv = colorsys.rgb_to_hsv(d[0]/255.0, d[1]/255.0, d[2]/255.0)
+  return dhsv[0]-chsv[0]
+  
 def colorDiffAverage(c,d):
   r = c[0]-d[0]
   g = c[1]-d[1]
