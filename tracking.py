@@ -1,3 +1,10 @@
+import mouse
+mousectl = mouse.MouseControl()
+
+mousedown = False
+lastcoord = (0,0)
+lasttime = 0
+
 def get_image(dolog = False, getpix = False):
   global im, pix, draw, imsrc
   if imsrc == "cam":
@@ -77,6 +84,27 @@ def get_image(dolog = False, getpix = False):
       vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
       yd = ((yp - disttop)/vwid) * 480
       draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
+      
+      global mousectl, mousedown, lastcoord, lasttime
+      
+      import datetime, math
+      
+      if lasttime != 0:
+        dist = math.sqrt((xd-lastcoord[0])*(xd-lastcoord[0]) + (yd-lastcoord[1])*(yd-lastcoord[1]))
+        timediff = datetime.datetime.now() - lasttime
+        if dist/(timediff.microseconds/1000) < 5:
+          if mousedown == False:
+            mousedown = True
+            mousectl.mouse_down(1)
+          scr = mousectl.get_screen_resolution()
+          mousectl.mouse_warp(int(1600*(xd/640.0)),int(1200*(yd/480.0)))
+      lasttime = datetime.datetime.now()
+    else:
+      global mousectl, mousedown
+      if mousedown == True:
+        pass
+        mousectl.mouse_up(1)
+      mousedown = False
   if mode == "draw":
     return canvas
   elif mode == "transform":
