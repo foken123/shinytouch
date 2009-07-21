@@ -109,7 +109,7 @@ def colorTest(x, y, dolog = False):
   if buildrange == True:
     return False
   c = pix[x+10,y] #reflection
-  d = pix[x+10,y-15] #background
+  d = pix[x+10,y-20] #background
   
   cdg = 200 *(abs(hueDiffGrade(c,d)))
   
@@ -119,7 +119,7 @@ def colorTest(x, y, dolog = False):
     print "Background ",d
     
   pix[x+10,y] = (255,255,255,255)
-  pix[x+10,y-15] = (255,0,255,255)
+  pix[x+10,y-20] = (255,0,255,255)
 
   draw.line(((0, 20), (cdg, 20)), fill=(255,0,0), width=10)
   draw.rectangle(((40,0),(80,40)), fill=c)
