@@ -49,7 +49,7 @@ def get_image(dolog = False, getpix = False):
 
   for x in range(0, w):
     count = 0
-    if x % 3 > 0:
+    if x % 2 > 0:
       continue
     for y in range(tr + int(ytr*x), br + int(ybr * x)):
       if y % 4 > 0:
