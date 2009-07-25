@@ -5,8 +5,145 @@
 #lastcoord = (0,0)
 #lasttime = 0
 
+oldpix = 0
+oldim = 0
+autocal = 1
+stateframecount = 0
+switchcount = 0
+
+
+diffmap = Image.new("RGB",(640,480))
+diffpix = diffmap.load()
+
+def colorDiffGrade(c,d):
+  r = c[0]-d[0]
+  g = c[1]-d[1]
+  b = c[2]-d[2]
+  return abs(r) + abs(g) + abs(b)
+
+
+def img_diff(w, h):
+  global diffmap, pix, oldpix
+  for x in range(0, w):
+    for y in range(0, h):
+      if colorDiffGrade(pix[x,y], oldpix[x,y]) > 20:
+        diffpix[x,y] = (diffpix[x,y][0]+20,diffpix[x,y][1]+20,diffpix[x,y][2]+20)
+  return diffmap
+     
+
+
+def get_points(w, h):
+  global diffpix, diffmap
+  diffdraw = ImageDraw.Draw(diffmap)
+  lvc = 0
+  tfvw = 0
+  fvw = 0
+  lvw = 0
+  yarr = []
+  for x in range(0,w):
+    vc = 0
+    pvc = 0
+    pve = 0
+    for y in range(0, h):
+      if diffpix[x,y][0] > 30:
+        vc += 1
+      else:
+        if vc > pvc:
+          pvc = vc
+          pve = x
+        vc = 0
+    yarr.append((pve-pvc,pve))
+    
+    #diffdraw.line(((x,pve-pvc),(x,pve)),fill=(255,255,255))
+    if pvc > lvc:
+      lvc = pvc
+      if tfvw == 0 and pvc > 30:
+        tfvw = x
+    elif pvc > 30:
+      lvw = x
+      fvw = tfvw
+  diffdraw.line(((lvw,0),(lvw,h)),fill=(0,0,255))
+  diffdraw.line(((fvw,0),(fvw,h)),fill=(255,0,0))
+  #fvw is first (left)
+  #lvw is last (right)
+  #[0] is start x (top)
+  #[1] is end x (bottom)
+  diffdraw.line(((fvw,yarr[fvw][0]),(lvw,yarr[lvw][0])),fill=(0,255,255))
+  diffdraw.line(((fvw,yarr[fvw][1]),(lvw,yarr[lvw][1])),fill=(0,255,255))
+  
+  #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
+  #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
+  #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
+  
+def get_pointsOld(w, h):
+  global diffpix, diffmap
+  diffdraw = ImageDraw.Draw(diffmap)
+  lvc = 0
+  lvw = 0
+  fvw = 0
+  tfvw = 0
+  for x in range(0,w):
+    vc = 0
+    pvc = 0
+    for y in range(0, h):
+      if diffpix[x,y][0] > 30:
+        vc += 1
+      else:
+        if vc + 5 > lvc and vc > 30:
+          if vc > pvc:
+            pvc = vc
+          lvc = vc
+          if lvc != 0:
+            lvw = x
+            fvw = tfvw
+            print 'woot',fvw
+            print lvc
+            #diffdraw.line(((x,0),(x,h)),fill=(255,255,255))
+        else:
+          lvc = 0
+          tfvw = x
+        vc = 0
+  diffdraw.line(((lvw,0),(lvw,h)),fill=(0,0,255))
+  diffdraw.line(((fvw,0),(fvw,h)),fill=(255,0,0))     
+def get_pointsx(w, h):
+  global diffpix
+  horconsec = 0
+  yarr = []
+  for x in range(0, w):
+    vertconsec = 0
+    hly = -1
+    hlw = -1
+    
+    for y in range(0, h):
+      if diffpix[x,y][0] > 20:
+        vertconsec += 1
+      else:
+        if vertconsec > 40:
+          hly = y
+          hlw = vertconsec
+        vertconsec = 0
+    yarr.append((hly-hlw, hly))
+    if hlw > 0 and hly > 0:
+      horconsec += 1
+    else:
+      if horconsec > 10:
+        print "STARTX",x-horconsec, "ENDX", x
+        global xs, xe, br, tr, tl, bl
+        xs = x-horconsec
+        xe = x-1
+        tr = yarr[xe][1]
+        br = yarr[xe][0]
+        tl = yarr[xs][1]
+        bl = yarr[xs][0]
+    
+        diffpix[xs, tl] = (100,100,255,255)
+        diffpix[xs, bl] = (100,100,255,255)
+        diffpix[xe, tr] = (100,100,255,255)
+        diffpix[xe, br] = (100,100,255,255)
+      horconsec = 0
+      
 def get_image(dolog = False, getpix = False):
-  global im, pix, draw, imsrc
+  global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim
   if imsrc == "cam":
     im = highgui.cvQueryFrame(camera)
     # Add the line below if you need it (Ubuntu 8.04+)
@@ -17,6 +154,42 @@ def get_image(dolog = False, getpix = False):
     im = Image.open(imsrc)
   pix = im.load()
   draw = ImageDraw.Draw(im)
+
+  if switchcount == 5:
+    get_points(640, 480)
+    #autocal = 0
+    #switchcount = 0
+    #saveconfig()
+    switchcount += 1
+  if switchcount > 5:
+    return diffmap
+  if autocal == 1:
+    stateframecount += 1
+    if stateframecount > 3:
+      if switchcount != 0:
+        img_diff(640, 480)
+        import datetime
+        oldim.save("test/Aold"+str(datetime.datetime.now().isoformat())+".png","PNG")
+        im.save("test/Anew"+str(datetime.datetime.now().isoformat())+".png","PNG")
+      switchcount+=1
+      oldpix = im.load()
+      oldim = im
+      stateframecount = 0
+      autocal = 2
+    return Image.new("RGB", (640,480), (255,255,255))
+  if autocal == 2:
+    stateframecount += 1
+    if stateframecount > 3:
+      img_diff(640, 480)
+      import datetime
+      oldim.save("test/Bold"+str(datetime.datetime.now().isoformat())+".png","PNG")
+      im.save("test/Bnew"+str(datetime.datetime.now().isoformat())+".png","PNG")
+      switchcount+=1
+      oldpix = im.load()
+      oldim = im
+      stateframecount = 0
+      autocal = 1
+    return Image.new("RGB", (640,480), (0,0,0))
 
   if getpix != False:
     global rmin, rmax, gmin, gmax, bmin, bmax
@@ -49,11 +222,11 @@ def get_image(dolog = False, getpix = False):
 
   for x in range(0, w):
     count = 0
-    if x % 2 > 0:
-      continue
+    #if x % 2 > 0:
+    #  continue
     for y in range(tr + int(ytr*x), br + int(ybr * x)):
-      if y % 4 > 0:
-        continue
+      #if y % 4 > 0:
+      #  continue
       if colorTargetMatch(pix[xe-x,y]):
         pix[xe-x,y] = (0,255,0,255)
         count += 1
