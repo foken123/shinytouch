@@ -37,7 +37,7 @@ def get_image(dolog = False, getpix = False):
     saveconfig()
     switchcount += 1
   if switchcount > 7:
-    if switchcount < 20:
+    if switchcount < 100:
       switchcount += 1
       return diffmap
     else:
