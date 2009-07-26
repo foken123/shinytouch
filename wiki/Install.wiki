@@ -1,0 +1,24 @@
+#summary How to set up the software.
+
+= Introduction =
+
+Ubuntu:
+
+From the terminal, run:
+
+{{{
+sudo apt-get install python python-pygame python-imaging libcv1 libcv-dev libhighgui-dev python-opencv libhighgui1
+}}}
+
+check out the svn:
+
+{{{
+svn checkout http://shinytouch.googlecode.com/svn/trunk/ shinytouch
+}}}
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
