@@ -80,17 +80,21 @@ def get_points(w, h):
   #lvw is last (right)
   #[0] is start x (top)
   #[1] is end x (bottom)
-  diffdraw.line(((fvw,yarr[fvw][0]),(lvw,yarr[lvw][0])),fill=(0,255,255))
-  diffdraw.line(((fvw,yarr[fvw][1]),(lvw,yarr[lvw][1])),fill=(0,255,255))
+  #diffdraw.line(((fvw,yarr[fvw][0]),(lvw,yarr[lvw][0])),fill=(0,255,255))
+  #diffdraw.line(((fvw,yarr[fvw][1]),(lvw,yarr[lvw][1])),fill=(0,255,255))
   
   global xs, xe, tl, bl, tr, br
   
   xs = fvw
   xe = lvw
-  tl = yarr[fvw][0]
-  bl = yarr[fvw][1]
-  tr = yarr[lvw][0]
-  br = yarr[lvw][1]
+  tl = yarr[fvw+1][0]
+  bl = yarr[fvw+1][1]
+  tr = yarr[lvw-1][0]
+  br = yarr[lvw-1][1]
+  
+  diffdraw.line(((xs, tl),(xe, tr)),fill=(0,255,255))
+  diffdraw.line(((xs, bl),(xe, br)),fill=(0,255,255))
+  
   
   #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
   #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))

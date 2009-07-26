@@ -60,6 +60,9 @@ while True:
           mode = "draw"
         elif event.unicode == "i":
           mode = "image"
+        elif event.unicode == "a":
+          global autocal
+          autocal = 1
         elif event.unicode == "b":
           if buildrange == True:
             buildrange = False
