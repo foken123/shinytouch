@@ -10,7 +10,7 @@ oldim = 0
 autocal = 1
 stateframecount = 0
 switchcount = 0
-
+scantimes = 0
 
 diffmap = Image.new("RGB",(640,480))
 diffpix = diffmap.load()
@@ -23,17 +23,36 @@ def colorDiffGrade(c,d):
 
 
 def img_diff(w, h):
-  global diffmap, pix, oldpix
+  global diffmap, pix, oldpix, diffpix, scantimes
+  backup = diffmap
+  backuppix = diffpix
+  count = 0
   for x in range(0, w):
     for y in range(0, h):
       if colorDiffGrade(pix[x,y], oldpix[x,y]) > 20:
-        diffpix[x,y] = (diffpix[x,y][0]+20,diffpix[x,y][1]+20,diffpix[x,y][2]+20)
-  return diffmap
-     
+        count += 1
+        diffpix[x,y] = (diffpix[x,y][0]+1,diffpix[x,y][1]+1,diffpix[x,y][2]+1)
+  ratio = float(count)/float(w*h)
+  print "R:",ratio
+  if ratio < 0.5:
+    scantimes += 1
+    return diffmap
+  else:
+    diffmap = backup
+    diffpix = backuppix
+    return False
 
 
+def average_img(w, h):
+  global diffpix
+  mt = 50
+  for x in range(0, w):
+    for y in range(0, h):
+      diffpix[x,y] = (mt*diffpix[x,y][0]/scantimes,mt*diffpix[x,y][1]/scantimes,mt*diffpix[x,y][2]/scantimes)
+      
 def get_points(w, h):
   global diffpix, diffmap
+  average_img(w,h)
   diffdraw = ImageDraw.Draw(diffmap)
   lvc = 0
   tfvw = 0
@@ -45,16 +64,20 @@ def get_points(w, h):
     pvc = 0
     pve = 0
     for y in range(0, h):
-      if diffpix[x,y][0] > 30:
+      if diffpix[x,y][0] > 60:
         vc += 1
       else:
         if vc > pvc:
           pvc = vc
-          pve = x
+          pve = y
         vc = 0
     yarr.append((pve-pvc,pve))
     
-    #diffdraw.line(((x,pve-pvc),(x,pve)),fill=(255,255,255))
+    #diffdraw.line(((x,0),(x,pve)),fill=(0,255,255))
+    #diffdraw.line(((x,0),(x,pvc)),fill=(255,255,255))
+    diffpix[x,pvc] = (255,255,255)
+    diffpix[x,pve] = (0,255,255)
+    diffpix[x,pve-pvc] = (0,255,0)
     if pvc > lvc:
       lvc = pvc
       if tfvw == 0 and pvc > 30:
@@ -62,86 +85,23 @@ def get_points(w, h):
     elif pvc > 30:
       lvw = x
       fvw = tfvw
+    
   diffdraw.line(((lvw,0),(lvw,h)),fill=(0,0,255))
   diffdraw.line(((fvw,0),(fvw,h)),fill=(255,0,0))
+  
+  diffdraw.line(((0,30),(w,30)),fill=(255,0,0))
   #fvw is first (left)
   #lvw is last (right)
   #[0] is start x (top)
   #[1] is end x (bottom)
-  diffdraw.line(((fvw,yarr[fvw][0]),(lvw,yarr[lvw][0])),fill=(0,255,255))
-  diffdraw.line(((fvw,yarr[fvw][1]),(lvw,yarr[lvw][1])),fill=(0,255,255))
+  diffdraw.line(((fvw,yarr[fvw][0]),(fvw,yarr[fvw][0])),fill=(0,255,255))
+  diffdraw.line(((lvw,yarr[lvw][1]),(lvw,yarr[lvw][1])),fill=(0,255,255))
   
   #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
   #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
   #diffdraw.line(((0,pvc),(w,pvc)),fill=(0,0,255))
   
-def get_pointsOld(w, h):
-  global diffpix, diffmap
-  diffdraw = ImageDraw.Draw(diffmap)
-  lvc = 0
-  lvw = 0
-  fvw = 0
-  tfvw = 0
-  for x in range(0,w):
-    vc = 0
-    pvc = 0
-    for y in range(0, h):
-      if diffpix[x,y][0] > 30:
-        vc += 1
-      else:
-        if vc + 5 > lvc and vc > 30:
-          if vc > pvc:
-            pvc = vc
-          lvc = vc
-          if lvc != 0:
-            lvw = x
-            fvw = tfvw
-            print 'woot',fvw
-            print lvc
-            #diffdraw.line(((x,0),(x,h)),fill=(255,255,255))
-        else:
-          lvc = 0
-          tfvw = x
-        vc = 0
-  diffdraw.line(((lvw,0),(lvw,h)),fill=(0,0,255))
-  diffdraw.line(((fvw,0),(fvw,h)),fill=(255,0,0))     
-def get_pointsx(w, h):
-  global diffpix
-  horconsec = 0
-  yarr = []
-  for x in range(0, w):
-    vertconsec = 0
-    hly = -1
-    hlw = -1
-    
-    for y in range(0, h):
-      if diffpix[x,y][0] > 20:
-        vertconsec += 1
-      else:
-        if vertconsec > 40:
-          hly = y
-          hlw = vertconsec
-        vertconsec = 0
-    yarr.append((hly-hlw, hly))
-    if hlw > 0 and hly > 0:
-      horconsec += 1
-    else:
-      if horconsec > 10:
-        print "STARTX",x-horconsec, "ENDX", x
-        global xs, xe, br, tr, tl, bl
-        xs = x-horconsec
-        xe = x-1
-        tr = yarr[xe][1]
-        br = yarr[xe][0]
-        tl = yarr[xs][1]
-        bl = yarr[xs][0]
-    
-        diffpix[xs, tl] = (100,100,255,255)
-        diffpix[xs, bl] = (100,100,255,255)
-        diffpix[xe, tr] = (100,100,255,255)
-        diffpix[xe, br] = (100,100,255,255)
-      horconsec = 0
-      
+  
 def get_image(dolog = False, getpix = False):
   global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim
   if imsrc == "cam":
@@ -155,22 +115,23 @@ def get_image(dolog = False, getpix = False):
   pix = im.load()
   draw = ImageDraw.Draw(im)
 
-  if switchcount == 5:
+  if switchcount == 7:
     get_points(640, 480)
     #autocal = 0
     #switchcount = 0
     #saveconfig()
     switchcount += 1
-  if switchcount > 5:
+  if switchcount > 7:
     return diffmap
   if autocal == 1:
     stateframecount += 1
     if stateframecount > 3:
       if switchcount != 0:
-        img_diff(640, 480)
+        if img_diff(640, 480) == False:
+          switchcount -= 1
         import datetime
-        oldim.save("test/Aold"+str(datetime.datetime.now().isoformat())+".png","PNG")
-        im.save("test/Anew"+str(datetime.datetime.now().isoformat())+".png","PNG")
+        #oldim.save("test/Aold"+str(datetime.datetime.now().isoformat())+".png","PNG")
+        #im.save("test/Anew"+str(datetime.datetime.now().isoformat())+".png","PNG")
       switchcount+=1
       oldpix = im.load()
       oldim = im
@@ -180,10 +141,11 @@ def get_image(dolog = False, getpix = False):
   if autocal == 2:
     stateframecount += 1
     if stateframecount > 3:
-      img_diff(640, 480)
+      if img_diff(640, 480) == False:
+          switchcount -= 1
       import datetime
-      oldim.save("test/Bold"+str(datetime.datetime.now().isoformat())+".png","PNG")
-      im.save("test/Bnew"+str(datetime.datetime.now().isoformat())+".png","PNG")
+      #oldim.save("test/Bold"+str(datetime.datetime.now().isoformat())+".png","PNG")
+      #im.save("test/Bnew"+str(datetime.datetime.now().isoformat())+".png","PNG")
       switchcount+=1
       oldpix = im.load()
       oldim = im
