@@ -16,9 +16,14 @@ check out the svn:
 svn checkout http://shinytouch.googlecode.com/svn/trunk/ shinytouch
 }}}
 
-= Details =
+Then, go to the directory:
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+{{{
+cd shinytouch
+}}}
+
+and finally, run shinytouch:
+
+{{{
+python shinytouch.py
+}}}
