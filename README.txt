@@ -16,13 +16,10 @@ After that, you need to make sure your webcam works. Actually
 this should be step -1, because there's no way for it to work
 if it doesn't work. Make sure it works somewhere.
 
-If you run Windows, please read up on VideoCapture's API and
-port this over to VideoCapture. It honestly shouldn't be hard
-at all. The file that you may need to edit is shinytouch.py and
-you should learn by comparing videocapture.py and webcam.py
-both in the test directory of this folder.
+If you run Windows, you can try using the OpenCV version or
+you can install VideoCapture and set input_type (found in
+shinytouch.py) to "videocapture" to use that as the input.
 
-You need OpenCV (or VideoCapture if you port it on windows), 
-PIL and pyGame.  
+You need OpenCV or VideoCapture, PIL and pyGame.  
 
 NOT FINISHED
