@@ -1,14 +1,14 @@
 def saveconfig():
   conf = generate_autoconf()
-  print conf
+  #print conf
   f = open('autoconf.py', 'w')
   f.write(conf)
   f.close()
-  print "Wrote configuration to file shinyautoconf.py"
+  print "Wrote configuration to file autoconf.py"
 
 
 def conf_calc():
-  global xs, xe, tl, bl, tr, br
+  global xs, xe, tl, bl, tr, br, w
   w = xe-xs
   if w != 0:
     ytr = float(tl-tr)/float(w);

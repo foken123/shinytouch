@@ -15,7 +15,7 @@ def colorTestHue(x, y, dolog = False):
     return False
     
   reflect = 5
-  reflect_range = 25
+  reflect_range = 35
   
   
   c = pix[x+reflect,y] #reflection

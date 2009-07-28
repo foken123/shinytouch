@@ -15,8 +15,13 @@ box = 10
 buildrange = False
 imsrc = "cam"
 
+
+
 width = 640
 height = 480
+
+
+
 
 canvas = Image.new("RGB", (width, height))
 canvaspix = canvas.load()
@@ -39,7 +44,7 @@ execfile("misc.py")
 
 fps = 60.0
 pygame.init()
-window = pygame.display.set_mode((640,480))
+window = pygame.display.set_mode((width,height))
 pygame.display.set_caption("ShinyTouch")
 screen = pygame.display.get_surface()
 clicks = 0
