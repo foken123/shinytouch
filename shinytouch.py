@@ -1,5 +1,4 @@
 import pygame
-import Image
 from pygame.locals import *
 import sys
 from PIL import Image, ImageColor, ImageDraw
@@ -84,7 +83,7 @@ while True:
             buildrange = True
             print "Enabled Color Range Building"
         elif event.unicode == "f":
-          pygame.display.set_mode((640,480),pygame.FULLSCREEN)
+          pygame.display.set_mode((width,height),pygame.FULLSCREEN)
         elif event.unicode == "t":
           if mode == "transform":
             mode = ""
@@ -104,7 +103,7 @@ while True:
           if event.button == 3:
             dolog = True
           elif event.button == 2:
-            canvas = Image.new("RGB", (640,480))
+            canvas = Image.new("RGB", (width,height))
             canvaspix = canvas.load()
             draw2 = ImageDraw.Draw(canvas)
             print "Reset Canvas"
