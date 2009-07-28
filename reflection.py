@@ -1,20 +1,3 @@
-rmin = 255
-rmax = -255
-
-gmin = 255
-gmax = -255
-
-bmin = 255
-bmax = -255
-
-xs = 203
-xe = 285
-
-tl = 164
-bl = 391
-
-tr = 65
-br = 450
 
 
 imv = .3
