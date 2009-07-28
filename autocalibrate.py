@@ -1,3 +1,8 @@
+max_ratio = 0.50
+
+##################END USEFUL CONFIGURATION#############
+
+
 oldpix = 0
 oldim = 0
 autocal = 0
@@ -39,7 +44,7 @@ def img_diff(w, h):
         todopix.append((x,y))
   ratio = float(count)/float(w*h)
   print "R:",ratio
-  if ratio < 0.5:
+  if ratio < max_ratio:
     scantimes += 1
     for lc in todopix:
       x = lc[0]
