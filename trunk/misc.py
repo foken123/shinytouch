@@ -6,6 +6,41 @@ def saveconfig():
   f.close()
   print "Wrote configuration to file shinyautoconf.py"
 
+
+def conf_calc():
+  global xs, xe, tl, bl, tr, br
+  w = xe-xs
+  if w != 0:
+    ytr = float(tl-tr)/float(w);
+    ybr = float(bl-br)/float(w);
+  else:
+    set_defaults()
+
+def set_defaults():
+  global rmin, rmax, gmin, gmax, bmin, bmax
+  global xs, xe, tl, bl, tr, br
+  rmin = 255
+  rmax = -255
+
+  gmin = 255
+  gmax = -255
+
+  bmin = 255
+  bmax = -255
+
+  xs = 10
+  xe = 20
+
+  tl = 100
+  bl = 110
+
+  tr = 90
+  br = 120
+
+  conf_calc()
+
+set_defaults()
+
 def generate_autoconf():
   return """#this is the perspective distortion configuration section
 xs = """+str(xs)+"""
@@ -27,11 +62,11 @@ gmax = """+str(gmax)+"""
 bmin = """+str(bmin)+"""
 bmax = """+str(bmax)+"""
 
-#DO NOT EDIT BEYOND THIS POINT
-w = xe-xs
-ytr = float(tl-tr)/float(w);
-ybr = float(bl-br)/float(w);"""
-  
+#Run calculations based on configuration
+conf_calc()
+"""
+
+
 if os.path.exists("autoconf.py"):
   execfile("autoconf.py")
 else:
@@ -39,4 +74,6 @@ else:
   w = xe-xs
   ytr = float(tl-tr)/float(w);
   ybr = float(bl-br)/float(w);
+  
+  
 

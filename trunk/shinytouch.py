@@ -15,11 +15,15 @@ box = 10
 buildrange = False
 imsrc = "cam"
 
-canvas = Image.new("RGB", (640,480))
+width = 640
+height = 480
+
+canvas = Image.new("RGB", (width, height))
 canvaspix = canvas.load()
 draw2 = ImageDraw.Draw(canvas)
 touchconf = False
 camera = highgui.cvCreateCameraCapture(0)
+
 
 w = 0
 ytr = 0

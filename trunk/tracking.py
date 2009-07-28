@@ -5,20 +5,12 @@
 #lastcoord = (0,0)
 #lasttime = 0
 
-oldpix = 0
-oldim = 0
-autocal = 0
-stateframecount = 0
-switchcount = 0
-scantimes = 0
 
-diffmap = Image.new("RGB",(640,480))
-diffpix = diffmap.load()
 
 execfile("autocalibrate.py")
 
 def get_image(dolog = False, getpix = False):
-  global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim
+  global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim, diffmap, scantimes
   if imsrc == "cam":
     im = highgui.cvQueryFrame(camera)
     # Add the line below if you need it (Ubuntu 8.04+)
@@ -31,9 +23,7 @@ def get_image(dolog = False, getpix = False):
   draw = ImageDraw.Draw(im)
 
   if switchcount == 7:
-    get_points(640, 480)
-    #autocal = 0
-    #switchcount = 0
+    get_points(width, height)
     saveconfig()
     switchcount += 1
   if switchcount > 7:
@@ -41,39 +31,39 @@ def get_image(dolog = False, getpix = False):
       switchcount += 1
       return diffmap
     else:
-      autocal = 0
-      switchcount = 0
-      scantimes = 0
-      
+      reset_calibrate()
+  
   if autocal == 1:
     stateframecount += 1
     if stateframecount > 3:
       if switchcount != 0:
-        if img_diff(640, 480) == False:
+        if img_diff(width, height) == False:
           switchcount -= 1
-        import datetime
-        #oldim.save("test/Aold"+str(datetime.datetime.now().isoformat())+".png","PNG")
-        #im.save("test/Anew"+str(datetime.datetime.now().isoformat())+".png","PNG")
       switchcount+=1
       oldpix = im.load()
       oldim = im
       stateframecount = 0
       autocal = 2
-    return Image.new("RGB", (640,480), (255,255,255))
+    im = Image.new("RGB", (width,height), (255,255,255))
+    draw = ImageDraw.Draw(im)
+    import random
+    draw.text((random.randint(0,width-100),random.randint(0,height-20)), "Auto Calibrating. Please Wait.", fill=(0,0,0))
+    return im
   if autocal == 2:
     stateframecount += 1
     if stateframecount > 3:
-      if img_diff(640, 480) == False:
+      if img_diff(width, height) == False:
           switchcount -= 1
-      import datetime
-      #oldim.save("test/Bold"+str(datetime.datetime.now().isoformat())+".png","PNG")
-      #im.save("test/Bnew"+str(datetime.datetime.now().isoformat())+".png","PNG")
       switchcount+=1
       oldpix = im.load()
       oldim = im
       stateframecount = 0
       autocal = 1
-    return Image.new("RGB", (640,480), (0,0,0))
+    im = Image.new("RGB", (width,height), (0,0,0))
+    draw = ImageDraw.Draw(im)
+    import random
+    draw.text((random.randint(0,width-100),random.randint(0,height-20)), "Auto Calibrating. Please Wait.", fill=(255,255,255))
+    return im
 
   if getpix != False:
     global rmin, rmax, gmin, gmax, bmin, bmax
@@ -98,6 +88,12 @@ def get_image(dolog = False, getpix = False):
   pix[xs, bl] = (100,100,255,255)
   pix[xe, tr] = (100,100,255,255)
   pix[xe, br] = (100,100,255,255)
+  
+  draw.line(((xs, tl),(xe, tr)),fill=(0,255,255))
+  draw.line(((xs, bl),(xe, br)),fill=(0,255,255))
+  
+  draw.line(((xs, tl),(xs, bl)),fill=(0,255,255))
+  draw.line(((xe, tr),(xe, br)),fill=(0,255,255))
   
   xp = 0
   yp = 0
@@ -136,10 +132,10 @@ def get_image(dolog = False, getpix = False):
       #if colorTest(pix[xp+5,yp],pix[xp+5,yp-10], touchcolor, xp, yp, dolog):
       #print "reflectoin: x:",(xe-x),"y:",(y-(count/2))
       draw.rectangle(((xp-10, yp-10),(xp+10, oy+10)), outline=(100,255,100))
-      xd = ((xp - xs)/float(w))*640
+      xd = ((xp - xs)/float(w))*width
       disttop = (((tr-tl)/w) * (xp-xs)) + tl
       vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
-      yd = ((yp - disttop)/vwid) * 480
+      yd = ((yp - disttop)/vwid) * height
       draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
       
       #global mousectl, mousedown, lastcoord, lasttime
@@ -152,7 +148,7 @@ def get_image(dolog = False, getpix = False):
       #      mousedown = True
       #      mousectl.mouse_down(1)
       #    scr = mousectl.get_screen_resolution()
-      #    mousectl.mouse_warp(int(1600*(xd/640.0)),int(1200*(yd/480.0)))
+      #    mousectl.mouse_warp(int(1600*(xd/width.0)),int(1200*(yd/height.0)))
       #lasttime = datetime.datetime.now()
     else:
       #global mousectl, mousedown
@@ -164,7 +160,7 @@ def get_image(dolog = False, getpix = False):
   if mode == "draw":
     return canvas
   elif mode == "transform":
-    return im.transform((640,480), Image.QUAD, (xs,tl,xs,bl,xe,br,xe,tr))
+    return im.transform((width,height), Image.QUAD, (xs,tl,xs,bl,xe,br,xe,tr))
   else:
     return im
 

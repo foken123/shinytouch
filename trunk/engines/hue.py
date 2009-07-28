@@ -26,9 +26,11 @@ def colorTestHue(x, y, dolog = False):
   pix[x+10,y] = (255,255,255,255)
   pix[x+10,y-20] = (255,0,255,255)
 
-  draw.line(((0, 20), (cdg, 20)), fill=(255,0,0), width=10)
+  
   draw.rectangle(((40,0),(80,40)), fill=c)
   draw.rectangle(((80,0),(120,40)), fill=d)
+
+  draw.line(((0, 20), (cdg, 20)), fill=(255,0,0), width=10)
 
   draw.text((0,20), str(cdg), fill=(0,0,0))
 
