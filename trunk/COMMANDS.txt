@@ -1,0 +1,20 @@
+Keyboard
+
+a       Auto Calibrate
+c       Manual Calibration
+q       Quit
+i       Augmented Raw Video Feed Mode
+d       Drawing editor mode
+t       Quad Transformed mode
+s       Save image to imgs/ directory
+g       Actually, this does nothing
+b       Enable/Disable color range mode
+f       Enable fullscreen (no way to exit)
+
+
+Mouse
+
+Right   None
+Middle  Reload config
+Left    Dump pixel information
+
