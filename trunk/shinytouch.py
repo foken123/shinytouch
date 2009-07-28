@@ -59,7 +59,6 @@ while True:
     getpix = False
     events = pygame.event.get()
     for event in events:
-
       if event.type == QUIT:
           sys.exit(0)
       if event.type == KEYDOWN:
@@ -75,6 +74,8 @@ while True:
         elif event.unicode == "a":
           global autocal
           autocal = 1
+        elif event.unicode == "q":
+          sys.exit(0)
         elif event.unicode == "b":
           if buildrange == True:
             buildrange = False
