@@ -10,13 +10,16 @@
 execfile("autocalibrate.py")
 
 def get_image(dolog = False, getpix = False):
-  global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim, diffmap, scantimes
+  global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim, diffmap, scantimes, input_type
   if imsrc == "cam":
-    im = highgui.cvQueryFrame(camera)
-    # Add the line below if you need it (Ubuntu 8.04+)
-    im = opencv.cvGetMat(im)
-    #convert Ipl image to PIL image
-    im = opencv.adaptors.Ipl2PIL(im)
+    if input_type == "opencv":
+      im = highgui.cvQueryFrame(camera)
+      # Add the line below if you need it (Ubuntu 8.04+)
+      im = opencv.cvGetMat(im)
+      #convert Ipl image to PIL image
+      im = opencv.adaptors.Ipl2PIL(im)
+    elif input_type == "videocapture":
+      im = camera.getImage()
   else:
     im = Image.open(imsrc)
   pix = im.load()

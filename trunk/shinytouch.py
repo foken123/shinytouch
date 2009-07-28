@@ -4,10 +4,14 @@ from pygame.locals import *
 import sys
 from PIL import Image, ImageColor, ImageDraw
 import itertools
-import opencv
-#this is important for capturing/displaying images
-from opencv import highgui 
 import os
+
+fps = 60.0
+width = 640
+height = 480
+input_type = "opencv"
+
+########END USEFUL CONFIGURATIOn########
 
 mode = "image"
 calibrate = False
@@ -16,20 +20,22 @@ buildrange = False
 imsrc = "cam"
 
 
-
-width = 640
-height = 480
-
-
-
-
 canvas = Image.new("RGB", (width, height))
 canvaspix = canvas.load()
 draw2 = ImageDraw.Draw(canvas)
 touchconf = False
-camera = highgui.cvCreateCameraCapture(0)
 
-
+if input_type == "opencv":
+  import opencv #this is important for capturing/displaying images
+  from opencv import highgui 
+  camera = highgui.cvCreateCameraCapture(0)
+elif input_type == "videocapture":
+  import VideoCapture
+  camera = VideoCapture.Device()
+  camera.setResolution(width,height)
+else:
+  print "No Camera Input type selected!"
+  
 w = 0
 ytr = 0
 ybr = 0
@@ -41,8 +47,6 @@ execfile("misc.py")
 
 
 
-
-fps = 60.0
 pygame.init()
 window = pygame.display.set_mode((width,height))
 pygame.display.set_caption("ShinyTouch")
