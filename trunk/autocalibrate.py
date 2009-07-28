@@ -34,7 +34,7 @@ def colorDiffGrade(c,d):
 
 
 def img_diff(w, h):
-  global diffmap, pix, oldpix, diffpix, scantimes
+  global diffmap, pix, oldpix, diffpix, scantimes, max_ratio
   count = 0
   todopix = []
   for x in range(0, w):
