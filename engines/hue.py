@@ -13,8 +13,13 @@ def colorTestHue(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix
   if buildrange == True:
     return False
-  c = pix[x+10,y] #reflection
-  d = pix[x+10,y-20] #background
+    
+  reflect = 5
+  reflect_range = 25
+  
+  
+  c = pix[x+reflect,y] #reflection
+  d = pix[x+reflect,y-20] #background
   
   cdg = 200 *(abs(hueDiffGrade(c,d)))
   
@@ -23,8 +28,8 @@ def colorTestHue(x, y, dolog = False):
     print "Reflection ",c
     print "Background ",d
     
-  pix[x+10,y] = (255,255,255,255)
-  pix[x+10,y-20] = (255,0,255,255)
+  pix[x+reflect,y] = (255,255,255,255)
+  pix[x+reflect,y-20] = (255,0,255,255)
 
   
   draw.rectangle(((40,0),(80,40)), fill=c)
@@ -32,9 +37,11 @@ def colorTestHue(x, y, dolog = False):
 
   draw.line(((0, 20), (cdg, 20)), fill=(255,0,0), width=10)
 
+  draw.line(((reflect_range, 0), (reflect_range, 40)), fill=(0,0,255))
+
   draw.text((0,20), str(cdg), fill=(0,0,0))
 
-  if cdg > 25:
+  if cdg > reflect_range:
     return True
   
   return False
