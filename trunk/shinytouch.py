@@ -76,6 +76,9 @@ while True:
           autocal = 1
         elif event.unicode == "q":
           sys.exit(0)
+        elif event.unicode == "o":
+          set_defaults()
+          saveconfig()
         elif event.unicode == "b":
           if buildrange == True:
             buildrange = False
