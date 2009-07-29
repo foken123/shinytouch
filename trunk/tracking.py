@@ -87,7 +87,7 @@ def get_image(dolog = False, getpix = False):
   
   #this is for build range mode.
   if getpix != False:
-    expandTargetRange(getpix[0],getpix[1])
+    expandTargetRange(pix[getpix[0],getpix[1]])
     saveconfig()
 
     
