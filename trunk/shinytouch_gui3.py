@@ -1,9 +1,12 @@
 import pygame
+import Image
 from pygame.locals import *
 import sys
 from PIL import Image, ImageColor, ImageDraw
 import itertools
 import os
+import Tkinter
+import threading
 
 fps = 60.0
 width = 640
@@ -19,7 +22,7 @@ buildrange = False
 imsrc = "cam"
 
 
-canvas = Image.new("RGB", (width, height),(255,255,255))
+canvas = Image.new("RGB", (width, height))
 canvaspix = canvas.load()
 draw2 = ImageDraw.Draw(canvas)
 touchconf = False
@@ -53,12 +56,81 @@ screen = pygame.display.get_surface()
 clicks = 0
 subavg = 0
 
+# init GUI
 
-while True:
+
+class GUI(threading.Thread):
+    def __init__(self):
+        self.root=Tkinter.Tk()
+        
+        self.button_exit = Tkinter.Button(self.root, text="QUIT", fg="red", command=self.quitapp)
+        self.button_exit.pack()
+
+        self.button_autocal = Tkinter.Button(self.root, text="Auto Calibrate", command=self.autocal)
+        self.button_autocal.pack()
+
+        self.button_mancal = Tkinter.Button(self.root, text="Manual Calibration", command=self.mancal)
+        self.button_mancal.pack()
+
+        self.button_draw = Tkinter.Button(self.root, text="Draw Mode", command=self.draw)
+        self.button_draw.pack()
+
+        self.button_transform = Tkinter.Button(self.root, text="Transform Mode", command=self.transform)
+        self.button_transform.pack()
+
+        self.button_normal = Tkinter.Button(self.root, text="Normal Mode", command=self.normalmode)
+        self.button_normal.pack()
+
+        self.button_clear = Tkinter.Button(self.root, text="Clear Settings", command=self.clearsettings)
+        self.button_clear.pack()
+        
+        threading.Thread.__init__(self)
+
+    def run(self):
+        self.root.mainloop()
+
+    def quitapp(self):
+      global exitapp
+      exitapp=True
+      sys.exit(0)
+
+    def draw(self):
+      global mode
+      mode = "draw"
+
+    def normalmode(self):
+      global mode
+      mode = "image"
+
+    def autocal(self):
+      global autocal
+      autocal=1
+
+    def transform(self):
+      global mode
+      mode = "transform"
+
+    def mancal(self):
+      global calibrate
+      calibrate = True
+      print "Click Top Left Corner"
+
+    def clearsettings(self):
+      os.remove("autoconf.py")
+      self.quitapp()
+
+app = GUI()
+app.start()
+
+exitapp=False
+
+
+while not exitapp:
     dolog = False
     getpix = False
     events = pygame.event.get()
     for event in events:
+
       if event.type == QUIT:
           sys.exit(0)
       if event.type == KEYDOWN:
@@ -74,8 +146,6 @@ while True:
         elif event.unicode == "a":
           global autocal
           autocal = 1
-        elif event.unicode == "q":
-          sys.exit(0)
         elif event.unicode == "b":
           if buildrange == True:
             buildrange = False
@@ -104,7 +174,7 @@ while True:
           if event.button == 3:
             dolog = True
           elif event.button == 2:
-            canvas = Image.new("RGB", (width,height),(255,255,255))
+            canvas = Image.new("RGB", (width,height))
             canvaspix = canvas.load()
             draw2 = ImageDraw.Draw(canvas)
             print "Reset Canvas"
