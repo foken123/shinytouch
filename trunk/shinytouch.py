@@ -19,7 +19,7 @@ buildrange = False
 imsrc = "cam"
 
 
-canvas = Image.new("RGB", (width, height),(255,255,255))
+canvas = Image.new("RGB", (width, height),(100,100,100))
 canvaspix = canvas.load()
 draw2 = ImageDraw.Draw(canvas)
 touchconf = False
@@ -104,7 +104,7 @@ while True:
           if event.button == 3:
             dolog = True
           elif event.button == 2:
-            canvas = Image.new("RGB", (width,height),(255,255,255))
+            canvas = Image.new("RGB", (width,height),(100,100,100))
             canvaspix = canvas.load()
             draw2 = ImageDraw.Draw(canvas)
             print "Reset Canvas"
