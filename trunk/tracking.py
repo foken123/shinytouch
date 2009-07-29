@@ -96,14 +96,7 @@ def get_image(dolog = False, getpix = False):
   #pix[xe, tr] = (100,100,255,255)
   #pix[xe, br] = (100,100,255,255)
   
-  #draw the cute little trapezoid over the window
-  
-  draw.line(((xs, tl),(xe, tr)),fill=(0,255,255))
-  draw.line(((xs, bl),(xe, br)),fill=(0,255,255))
-  
-  draw.line(((xs, tl),(xs, bl)),fill=(0,255,255))
-  draw.line(((xe, tr),(xe, br)),fill=(0,255,255))
-  
+
   #where the values will be stored
   xp = 0 #the x point of contact
   yp = 0 #the y point of contact
@@ -183,7 +176,18 @@ def get_image(dolog = False, getpix = False):
       #  mousectl.mouse_up(1)
       #mousedown = False
       pass
-   #draw the fps meter
+      
+      
+  #draw the cute little trapezoid over the window
+  
+  draw.line(((xs, tl),(xe, tr)),fill=(0,255,255))
+  draw.line(((xs, bl),(xe, br)),fill=(0,255,255))
+  
+  draw.line(((xs, tl),(xs, bl)),fill=(0,255,255))
+  draw.line(((xe, tr),(xe, br)),fill=(0,255,255))
+  
+  
+  #draw the fps meter
   draw.text((20, height - 40), "FPS: " + str(speed.go()), fill=(255,255,255))
   if mode == "draw":
     return canvas
