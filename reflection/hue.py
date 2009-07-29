@@ -21,6 +21,7 @@ def colorTestHue(x, y, dolog = False):
   
   c = pix[x+reflect,y] #reflection
   d = pix[x+reflect,y-20] #background
+  t = pix[x-5,y] #color of the finger
   
   cdg = 200 *(abs(hueDiffGrade(c,d)))
   
@@ -44,7 +45,6 @@ def colorTestHue(x, y, dolog = False):
 
   if cdg > reflect_range:
     return True
-  
   return False
 
 #huesumstuff
