@@ -5,7 +5,7 @@
 #lastcoord = (0,0)
 #lasttime = 0
 
-
+oxd, oyd = 0, 0
 
 execfile("autocalibrate.py")
 execfile("performance.py")
@@ -168,8 +168,13 @@ def get_image(dolog = False, getpix = False):
       yd = ((yp - disttop)/vwid) * height
       
       #draw the box for draw mode
-      draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
+      #draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
       
+      global oxd, oyd
+      if oxd and oyd:
+        draw2.line(((oxd, oyd),(xd, yd)), fill=(100,255,100))
+      oxd=xd
+      oyd=yd
       
       #THE MOUSE CONTROLS ON LINUX ONLY
       
