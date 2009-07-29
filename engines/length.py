@@ -18,12 +18,6 @@ def colorTriDiff(c, f, s):
 def valueTriDiff(compare, first, second):
   return abs(first - compare) - abs(second - compare)
 
-def colorTargetMatch(c):
-  if c[0] < rmax and c[0] > rmin: #red
-    if c[1] < gmax and c[1] > gmin: #green
-      if c[2] < bmax and c[2] > bmin: #blue
-        return True
-  return False
 
 def colorTestLength(x, y, dolog = False):
   global imv, testmode, buildrange, draw, pix

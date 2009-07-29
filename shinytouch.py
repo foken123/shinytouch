@@ -40,7 +40,7 @@ ytr = 0
 ybr = 0
 
 
-execfile("reflection.py")
+execfile("color.py")
 execfile("tracking.py")
 execfile("misc.py")
 
@@ -110,7 +110,7 @@ while True:
             print "Reset Canvas"
             execfile("tracking.py")
             print "Loaded finger tracker core"
-            execfile("reflection.py")
+            execfile("color.py")
             print "Loaded Reflection Detection Algorithm"
             execfile("autoconf.py")
             print "Loaded Automatic Generated Configuration"
