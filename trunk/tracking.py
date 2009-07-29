@@ -141,6 +141,7 @@ def get_image(dolog = False, getpix = False):
       #complexiful linear approximation algorithm that tries to fix distortion
       #only elitist people should venture to the following lines
       #pleez someone fix it!
+      
       xd = ((xp - xs)/float(w))*width
       disttop = (((tr-tl)/w) * (xp-xs)) + tl
       vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))

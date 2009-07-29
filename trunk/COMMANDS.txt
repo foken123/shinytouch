@@ -10,7 +10,7 @@ s       Save image to imgs/ directory
 g       Actually, this does nothing
 b       Enable/Disable color range mode
 f       Enable fullscreen (no way to exit)
-
+o       Reset configuration
 
 Mouse
 
