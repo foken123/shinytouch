@@ -1,3 +1,5 @@
+import osc
+
 #based on http://www.pillowsopher.com/blog/?p=79
 
 class Touch(object):
@@ -31,31 +33,50 @@ class Touch(object):
             self.m = 0.0
             self.time = time
 
+osc_host = "127.0.0.1"
+osc_port = 3333
+fseq = 0
 
-[{"elementId": "tuio", "action": "alive", "time": 1248986480687, "alive": [8]}, {"elementId": "tuio", "action": "move", "time": 1248986480687, "touches": [{"x": 218, "y": 87, "identifier": 8}]}]
-[{"elementId": "tuio", "action": "alive", "time": 1248986481100, "alive": []}]
+def msg(args):
+  global osc_host, osc_port
+  osc.sendMsg("/tuio/2dcur", args, osc_host, osc_port)
+  
+def alive(ids = []):
+  global touches
+  fseq()
+  # remove the touches that are gone from the list
+  for id in touches.keys():
+      if not id in ids:
+          del touches[id]
+  # add new touches
+  for id in ids:
+      if not touches.has_key(id):
+          touches[id] = Touch(id)
+  tuio_msg(["alive"].extend(ids))
+  
+def fseq():
+  global fseq
+  tuio_msg(["fseq", fseq])
+  fseq += 1
 
-# remove the touches that are gone from the list
-for id in touches.keys():
-    if not id in evt['alive']:
-        del touches[id]
-# add new touches
-for id in evt['alive']:
-    if not touches.has_key(id):
-        touches[id] = Touch(id)
-osc.sendMsg("/tuio/2Dcur", ["fseq", fseq], osc_host, osc_port)
-fseq += 1
-args = ["alive"]
-args.extend([t.id for t in touches.values()])
-osc.sendMsg("/tuio/2Dcur", args, osc_host, osc_port)
-
-#################MOVE
+def move(id, x, y):
+  global touches
+  touches[id].update(x, y, now_time())
+  tuio_msg(["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m])
+  
+def now_time():
+  import time, datetime
+  return time.mktime(datetime.datetime.now().timetuple()
 
 
-osc.sendMsg("/tuio/2Dcur", ["fseq", fseq], osc_host, osc_port)
-fseq += 1
-for t in evt['touches']:
-    id = t['identifier']
-    touches[id].update(float(t['x'])/surface_width, float(t['y'])/surface_height, evt['time'])
-    osc.sendMsg("/tuio/2Dcur", ["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m], osc_host, osc_port)
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

@@ -9,6 +9,7 @@ oxd, oyd = 0, 0
 
 execfile("autocalibrate.py")
 execfile("performance.py")
+execfile("events.py")
 
 speed = FpsMeter() #set up the new fps meter
 
@@ -177,12 +178,14 @@ def get_image(dolog = False, getpix = False):
       #    scr = mousectl.get_screen_resolution()
       #    mousectl.mouse_warp(int(1600*(xd/width.0)),int(1200*(yd/height.0)))
       #lasttime = datetime.datetime.now()
+      handle_touch(xd/float(width), yd/float(height))
     else:
       #global mousectl, mousedown
       #if mousedown == True:
       #  pass
       #  mousectl.mouse_up(1)
       #mousedown = False
+      handle_lift()
       pass
       
       
