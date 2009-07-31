@@ -1,12 +1,15 @@
 #from http://www.jperla.com/blog/2007/09/26/capturing-frames-from-a-webcam-on-linux/
 import pygame
-import Image
+import Image, ImageDraw
 from pygame.locals import *
 import sys
 
 import opencv
 #this is important for capturing/displaying images
 from opencv import highgui 
+import performance
+
+speed = performance.FpsMeter()
 
 camera = highgui.cvCreateCameraCapture(0)
 def get_image():
@@ -14,9 +17,14 @@ def get_image():
     # Add the line below if you need it (Ubuntu 8.04+)
     im = opencv.cvGetMat(im)
     #convert Ipl image to PIL image
-    return opencv.adaptors.Ipl2PIL(im) 
+    im = opencv.adaptors.Ipl2PIL(im) 
+    
+    draw = ImageDraw.Draw(im)
+    global speed
+    draw.text((20,20), "FPS: " + str(speed.go()), fill=(255,255,255))
+    return im
 
-fps = 30.0
+fps = 60.0
 pygame.init()
 window = pygame.display.set_mode((640,480))
 pygame.display.set_caption("WebCam Demo")

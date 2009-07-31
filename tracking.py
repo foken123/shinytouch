@@ -141,20 +141,27 @@ def get_image(dolog = False, getpix = False):
       #complexiful linear approximation algorithm that tries to fix distortion
       #only elitist people should venture to the following lines
       #pleez someone fix it!
-      
+      #"""
       xd = ((xp - xs)/float(w))*width
       disttop = (((tr-tl)/w) * (xp-xs)) + tl
       vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
       yd = ((yp - disttop)/vwid) * height
       
+      """
+      xd = (xp-xs)*width/float(w) # x co-ordinate with distortion
+      # smallest side + top bit*x-ratio + bottom bit*x-ratio
+      top = tr + ((tl-tr)*(xd/float(width)))
+      heightinsidequad = (bl-tl) + ((tl-tr)*(xd/float(width))) + ((br-bl)*(xd/float(width)))
+      yd = (yp-top)*height/float(heightinsidequad)
+      #"""
       #draw the box for draw mode
-      #draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
+      draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
       
-      global oxd, oyd
-      if oxd and oyd:
-        draw2.line(((oxd, oyd),(xd, yd)), fill=(100,255,100))
-      oxd=xd
-      oyd=yd
+      #global oxd, oyd
+      #if oxd and oyd:
+      #  draw2.line(((oxd, oyd),(xd, yd)), fill=(100,255,100))
+      #oxd=xd
+      #oyd=yd
       
       #THE MOUSE CONTROLS ON LINUX ONLY
       
