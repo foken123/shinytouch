@@ -5,7 +5,7 @@ from PIL import Image, ImageColor, ImageDraw
 import itertools
 import os
 
-fps = 60.0
+fps = 120.0
 width = 640
 height = 480
 input_type = "opencv"

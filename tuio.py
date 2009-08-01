@@ -72,7 +72,7 @@ def move(id, x, y):
   osc.sendMsg("/tuio/2Dcur", ["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m], osc_host, osc_port)
   
 def now_time():
-  import time, datetime
-  return int(time.mktime(datetime.datetime.now().timetuple())*1000)
+  import time
+  return int(time.time()*1000)
 
 osc.init()
