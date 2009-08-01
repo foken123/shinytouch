@@ -10,5 +10,3 @@ def handle_lift():
   print "Lift"
   tuio.alive([]) #none alive
   
-  
-  
