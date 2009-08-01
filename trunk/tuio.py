@@ -1,5 +1,11 @@
+from os import curdir, sep
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+import SocketServer
 import osc
+import json
+import socket
 import math
+import sys
 
 #based on http://www.pillowsopher.com/blog/?p=79
 
@@ -39,10 +45,6 @@ osc_port = 3333
 fseq_count = 0
 touches = {}
 
-def msg(args):
-  global osc_host, osc_port
-  osc.sendMsg("/tuio/2dcur", args, osc_host, osc_port)
-  
 def alive(ids = []):
   global touches
   fseq()
@@ -55,21 +57,22 @@ def alive(ids = []):
       if not touches.has_key(id):
           touches[id] = Touch(id)
   args = ["alive"]
-  args.extend(ids)
-  msg(args)
+  args.extend([t.id for t in touches.values()])
+  osc.sendMsg("/tuio/2Dcur", args, osc_host, osc_port)
   
 def fseq():
   global fseq_count
-  msg(["fseq", fseq_count])
+  osc.sendMsg("/tuio/2Dcur", ["fseq", fseq_count], osc_host, osc_port)
   fseq_count += 1
 
 def move(id, x, y):
   global touches
   touches[id].update(x, y, now_time())
-  msg(["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m])
+  #msg(["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m])
+  osc.sendMsg("/tuio/2Dcur", ["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m], osc_host, osc_port)
   
 def now_time():
   import time, datetime
-  return time.mktime(datetime.datetime.now().timetuple())
+  return int(time.mktime(datetime.datetime.now().timetuple())*1000)
 
 osc.init()
