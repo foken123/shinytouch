@@ -1,4 +1,5 @@
 import osc
+import math
 
 #based on http://www.pillowsopher.com/blog/?p=79
 
