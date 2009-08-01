@@ -2,7 +2,7 @@ import tuio
 
 def handle_touch(x, y):
   tuio.alive([1]) #one alive
-  fseq()
+  tuio.fseq()
   tuio.move(1, x, y)
   
 def handle_lift():

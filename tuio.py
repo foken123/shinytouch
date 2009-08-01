@@ -35,7 +35,8 @@ class Touch(object):
 
 osc_host = "127.0.0.1"
 osc_port = 3333
-fseq = 0
+fseq_count = 0
+touches = {}
 
 def msg(args):
   global osc_host, osc_port
@@ -52,31 +53,22 @@ def alive(ids = []):
   for id in ids:
       if not touches.has_key(id):
           touches[id] = Touch(id)
-  tuio_msg(["alive"].extend(ids))
+  args = ["alive"]
+  args.extend(ids)
+  msg(args)
   
 def fseq():
-  global fseq
-  tuio_msg(["fseq", fseq])
-  fseq += 1
+  global fseq_count
+  msg(["fseq", fseq_count])
+  fseq_count += 1
 
 def move(id, x, y):
   global touches
   touches[id].update(x, y, now_time())
-  tuio_msg(["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m])
+  msg(["set", id, touches[id].x, touches[id].y, touches[id].X, touches[id].Y, touches[id].m])
   
 def now_time():
   import time, datetime
-  return time.mktime(datetime.datetime.now().timetuple()
+  return time.mktime(datetime.datetime.now().timetuple())
 
-
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+osc.init()
