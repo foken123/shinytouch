@@ -1,5 +1,4 @@
 from os import curdir, sep
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
 import osc
 import json

@@ -1,10 +1,58 @@
 import tuio
 
+oxd, oyd = 0, 0
+
+#import mouse
+#mousectl = mouse.MouseControl()
+
+#mousedown = False
+#lastcoord = (0,0)
+#lasttime = 0
+
+
 def handle_touch(x, y):
+  global width, height
+
+  #THE MOUSE CONTROLS ON LINUX ONLY
+  
+  #THIS MOUSE STUFF IS DEPRECATED. USE TUIOMOUSE OR SIMILAR INSTEAD.
+  
+  #global mousectl, mousedown, lastcoord, lasttime
+  #import datetime, math
+  #if lasttime != 0:
+  #  dist = math.sqrt((xd-lastcoord[0])*(xd-lastcoord[0]) + (yd-lastcoord[1])*(yd-lastcoord[1]))
+  #  timediff = datetime.datetime.now() - lasttime
+  #  if dist/(timediff.microseconds/1000) < 5:
+  #    if mousedown == False:
+  #      mousedown = True
+  #      mousectl.mouse_down(1)
+  #    scr = mousectl.get_screen_resolution()
+  #    mousectl.mouse_warp(int(1600*(xd/width.0)),int(1200*(yd/height.0)))
+  #lasttime = datetime.datetime.now()
+  
+  xd = width * x
+  yd = height * y
+  
+  draw2.rectangle(((xd-2, yd-2),(xd+2, yd+2)), outline=(100,255,100))
+  
+  global oxd, oyd
+  if oxd and oyd:
+    draw2.line(((oxd, oyd),(xd, yd)), fill=(100,255,100))
+  oxd=xd
+  oyd=yd
+
   tuio.alive([1]) #one alive
   tuio.fseq()
   tuio.move(1, x, y)
   
 def handle_lift():
+  #global mousectl, mousedown
+  #if mousedown == True:
+  #  pass
+  #  mousectl.mouse_up(1)
+  #mousedown = False
+  global oxd, oyd
+  oxd = 0.0
+  oyd = 0.0
   tuio.alive([]) #none alive
   

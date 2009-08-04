@@ -28,29 +28,29 @@ def colorTestLength(x, y, dolog = False):
   d = pix[x+5,y-10]
   t = pix[x-5,y]
   
-  draw.line(((x-4,y),(x+4,y)),fill=(255,255,0))
-  draw.line(((x,y-4),(x,y+4)),fill=(255,255,0))
+  #draw.line(((x-4,y),(x+4,y)),fill=(255,255,0))
+  #draw.line(((x,y-4),(x,y+4)),fill=(255,255,0))
   
   sumfs = 0
   for xpix in range(6,15):
     flen =  measureLength(x-xpix,y)+abs(measureLength(x-xpix,y-1,yi=-1,smarty=-30))
     slen =  measureLength(x+xpix,y)+abs(measureLength(x+xpix,y-1,yi=-1,smarty=-30))
-    if y < 445 and y > 35:
-      pix[x-xpix,y+30] = (255,0,255)
-      pix[x-xpix,y-30] = (255,0,255)
-      pix[x+xpix,y+30] = (255,0,255)
-      pix[x+xpix,y-30] = (255,0,255)
+
       
     #print flen-slen
     sumfs += abs(flen-slen)
     #if abs(flen-slen) > 20:
     #  return False
-  print sumfs / abs(float(6-15))
+  #print sumfs / abs(float(6-15))
   
+  maxfs = 25
   
-  draw.line(((100, 20), (100+sumfs, 20)), fill=(255,0,0), width=10)
+  avgfs = sumfs / abs(float(6-15))
   
-  if sumfs / abs(float(6-15)) > 10:
+  draw.line(((150, 20), (150+avgfs, 20)), fill=(255,0,0), width=10)
+  draw.line(((150+maxfs, 0), (150+maxfs, 40)), fill=(0,0,255))
+  
+  if avgfs > maxfs:
     return False
   return True
 

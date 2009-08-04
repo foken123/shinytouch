@@ -1,11 +1,5 @@
-#import mouse
-#mousectl = mouse.MouseControl()
 
-#mousedown = False
-#lastcoord = (0,0)
-#lasttime = 0
 
-oxd, oyd = 0, 0
 
 execfile("autocalibrate.py")
 execfile("performance.py")
@@ -156,35 +150,9 @@ def get_image(dolog = False, getpix = False):
       yd = (yp-top)*height/float(heightinsidequad)
       #"""
       #draw the box for draw mode
-      draw2.rectangle(((xd-5, yd-5),(xd+5, yd+5)), outline=(100,255,100), fill=(100,255,100))
       
-      #global oxd, oyd
-      #if oxd and oyd:
-      #  draw2.line(((oxd, oyd),(xd, yd)), fill=(100,255,100))
-      #oxd=xd
-      #oyd=yd
-      
-      #THE MOUSE CONTROLS ON LINUX ONLY
-      
-      #global mousectl, mousedown, lastcoord, lasttime
-      #import datetime, math
-      #if lasttime != 0:
-      #  dist = math.sqrt((xd-lastcoord[0])*(xd-lastcoord[0]) + (yd-lastcoord[1])*(yd-lastcoord[1]))
-      #  timediff = datetime.datetime.now() - lasttime
-      #  if dist/(timediff.microseconds/1000) < 5:
-      #    if mousedown == False:
-      #      mousedown = True
-      #      mousectl.mouse_down(1)
-      #    scr = mousectl.get_screen_resolution()
-      #    mousectl.mouse_warp(int(1600*(xd/width.0)),int(1200*(yd/height.0)))
-      #lasttime = datetime.datetime.now()
       handle_touch(xd/float(width), yd/float(height))
     else:
-      #global mousectl, mousedown
-      #if mousedown == True:
-      #  pass
-      #  mousectl.mouse_up(1)
-      #mousedown = False
       handle_lift()
       pass
       
