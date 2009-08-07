@@ -1,12 +1,12 @@
 #this is the perspective distortion configuration section
-xs = 301
-xe = 377
+xs = 104
+xe = 192
 
-tl = 91
-bl = 248
+tl = 157
+bl = 345
 
-tr = 59
-br = 263
+tr = 121
+br = 372
 
 #this is the color detection configuration section
 rmin = 166
