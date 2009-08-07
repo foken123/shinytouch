@@ -24,7 +24,7 @@ def get_image():
     draw.text((20,20), "FPS: " + str(speed.go()), fill=(255,255,255))
     return im
 
-fps = 60.0
+fps = 240.0
 pygame.init()
 window = pygame.display.set_mode((640,480))
 pygame.display.set_caption("WebCam Demo")

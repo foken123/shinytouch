@@ -3,11 +3,11 @@ def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incremente
   yt = 0
   #while colorDiffGrade(pix[x+xt,y+yt],pix[x+xt+xi,y+yt+yi]) < r: #use a more fine tuned function
   if smarty > 0:
-    bgcolor = pix[x,y-20]
-    pix[x,y-20] = (255,255,255)
+    bgcolor = pix[x,y-15]
+    pix[x,y-15] = (255,255,255)
   else:
-    bgcolor = pix[x,y+20]
-    pix[x,y+20] = (255,255,255)
+    bgcolor = pix[x,y+15]
+    pix[x,y+15] = (255,255,255)
   targetcolor = pix[x,y]
   while colorTriDiff(pix[x+xt+xi,y+yt+yi],targetcolor,bgcolor) < 0:
     pix[x+xt,y+yt] = (255,255,255,255)
@@ -47,7 +47,7 @@ def colorTestLength(x, y, dolog = False):
     #  return False
   #print sumfs / abs(float(6-15))
   
-  maxfs = 30
+  maxfs = 35
   
   avgfs = sumfs / abs(float(6-15))
   

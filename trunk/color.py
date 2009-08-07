@@ -22,9 +22,10 @@ execfile("reflection/length.py")
 execfile("tracking/rgb.py")
 
 def colorTest(x, y, dolog = False):
-  return colorTestLength(x, y, dolog) and colorTestHue(x, y, dolog)
+  #return False
+  #return colorTestLength(x, y, dolog) and colorTestHue(x, y, dolog)
   #return colorTestLength(x, y, dolog)
-  #return colorTestHue(x, y, dolog)
+  return colorTestHue(x, y, dolog)
   #return colorTestLength(x, y, dolog)
   #return colorTestLength(x, y, dolog)
 

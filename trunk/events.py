@@ -1,4 +1,5 @@
 import tuio
+import math
 
 oxd, oyd = 0, 0
 
@@ -8,6 +9,9 @@ oxd, oyd = 0, 0
 #mousedown = False
 #lastcoord = (0,0)
 #lasttime = 0
+
+def dist(x1, y1, x2, y2):
+  return math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1))
 
 
 def handle_touch(x, y):
@@ -36,7 +40,7 @@ def handle_touch(x, y):
   draw2.rectangle(((xd-2, yd-2),(xd+2, yd+2)), outline=(100,255,100))
   
   global oxd, oyd
-  if oxd and oyd:
+  if oxd and oyd and dist(xd, yd, oxd, oyd) < 100:
     draw2.line(((oxd, oyd),(xd, yd)), fill=(100,255,100))
   oxd=xd
   oyd=yd

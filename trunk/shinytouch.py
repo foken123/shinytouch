@@ -148,5 +148,5 @@ while True:
     pg_img = pygame.image.frombuffer(im.tostring(), im.size, im.mode)
     screen.blit(pg_img, (0,0))
     pygame.display.flip()
-    pygame.time.delay(int(1000 * 1.0/fps))
+    #pygame.time.delay(int(1000 * 1.0/fps))
 
