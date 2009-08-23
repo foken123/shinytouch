@@ -1,22 +1,22 @@
 #this is the perspective distortion configuration section
-xs = 104
-xe = 192
+xs = 164
+xe = 256
 
-tl = 157
-bl = 345
+tl = 119
+bl = 305
 
-tr = 121
-br = 372
+tr = 49
+br = 306
 
 #this is the color detection configuration section
-rmin = 166
-rmax = 203
+rmin = 161
+rmax = 255
 
-gmin = 110
-gmax = 181
+gmin = 119
+gmax = 233
 
-bmin = 107
-bmax = 186
+bmin = 105
+bmax = 205
 
 #Run calculations based on configuration
 conf_calc()
