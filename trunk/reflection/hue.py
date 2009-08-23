@@ -17,10 +17,11 @@ def colorTestHue(x, y, dolog = False):
     
   reflect = 5
   reflect_range = 25
+  background_top = 10
   
   
   c = pix[x+reflect,y] #reflection
-  d = pix[x+reflect,y-20] #background
+  d = pix[x+reflect,y-background_top] #background
   t = pix[x-5,y] #color of the finger
   
   cdg = 200 *(abs(hueDiffGrade(c,d)))
@@ -31,7 +32,7 @@ def colorTestHue(x, y, dolog = False):
     print "Background ",d
     
   pix[x+reflect,y] = (255,255,255,255)
-  pix[x+reflect,y-20] = (255,0,255,255)
+  pix[x+reflect,y-background_top] = (255,0,255,255)
 
   
   draw.rectangle(((40,0),(80,40)), fill=c)

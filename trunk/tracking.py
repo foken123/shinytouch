@@ -1,5 +1,4 @@
-
-
+from perspective import *
 
 execfile("autocalibrate.py")
 execfile("performance.py")
@@ -97,6 +96,7 @@ def get_image(dolog = False, getpix = False):
   yp = 0 #the y point of contact
   wp = 0
   oy = 0
+  matchcount = 0
 
   for x in range(0, w):
     count = 0 #consecutive finger pixels
@@ -119,42 +119,53 @@ def get_image(dolog = False, getpix = False):
           count = -1 #signal for win
           break
     if count == -1: #WIN!
-      break
+      matchcount += 1
+      if matchcount > 2:
+        break
+      if xp > 0 and yp - 10> 0 and xp + 10 < im.size[0]:
+        touchcolor = pix[xp-5,yp]
+        pix[xp,yp] = (255,255,255,255)
+        #if colorShadowTest(draw, pix[xp+5, yp-10], pix[xp+5,yp-10], xp, yp):
+        if colorTest(xp, yp, dolog):
+          #if colorTest(pix[xp+5,yp],pix[xp+5,yp-10], touchcolor, xp, yp, dolog):
+          #print "reflectoin: x:",(xe-x),"y:",(y-(count/2))
+          
+          
+          #draw the rectangle around the point of contact
+          draw.rectangle(((xp-10, yp-10),(xp+10, oy+10)), outline=(100,255,100))
+          
+          #complexiful linear approximation algorithm that tries to fix distortion
+          #only elitist people should venture to the following lines
+          #pleez someone fix it!
+          """
+          xd = ((xp - xs)/float(w))*width
+          disttop = (((tr-tl)/w) * (xp-xs)) + tl
+          vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
+          yd = ((yp - disttop)/vwid) * height
+          
+          xd = (xp-xs)*width/float(w) # x co-ordinate with distortion
+          # smallest side + top bit*x-ratio + bottom bit*x-ratio
+          top = tr + ((tl-tr)*(xd/float(width)))
+          heightinsidequad = (bl-tl) + ((tl-tr)*(xd/float(width))) + ((br-bl)*(xd/float(width)))
+          yd = (yp-top)*height/float(heightinsidequad)
+          #"""
+          
+          
+          warper = Perspective()
+          warper.setsrc((xs,tl),(xe,tr),(xs,bl),(xe,br))
+          warper.setdst((0,0),(width,0),(0,height),(width,height))
+          xd, yd = warper.warp(xp, yp)
+          
+          #draw the box for draw mode
+          
+          handle_touch(xd/float(width), yd/float(height))
+          break
+        else:
+          handle_lift()
+          pass
+  else:
+    draw.text((20, 20), "No Target Found", fill=(255,255,255))
 
-  if xp > 0 and yp - 10> 0 and xp + 10 < im.size[0]:
-    touchcolor = pix[xp-5,yp]
-    pix[xp,yp] = (255,255,255,255)
-    #if colorShadowTest(draw, pix[xp+5, yp-10], pix[xp+5,yp-10], xp, yp):
-    if colorTest(xp, yp, dolog):
-      #if colorTest(pix[xp+5,yp],pix[xp+5,yp-10], touchcolor, xp, yp, dolog):
-      #print "reflectoin: x:",(xe-x),"y:",(y-(count/2))
-      
-      
-      #draw the rectangle around the point of contact
-      draw.rectangle(((xp-10, yp-10),(xp+10, oy+10)), outline=(100,255,100))
-      
-      #complexiful linear approximation algorithm that tries to fix distortion
-      #only elitist people should venture to the following lines
-      #pleez someone fix it!
-      #"""
-      xd = ((xp - xs)/float(w))*width
-      disttop = (((tr-tl)/w) * (xp-xs)) + tl
-      vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
-      yd = ((yp - disttop)/vwid) * height
-      
-      """
-      xd = (xp-xs)*width/float(w) # x co-ordinate with distortion
-      # smallest side + top bit*x-ratio + bottom bit*x-ratio
-      top = tr + ((tl-tr)*(xd/float(width)))
-      heightinsidequad = (bl-tl) + ((tl-tr)*(xd/float(width))) + ((br-bl)*(xd/float(width)))
-      yd = (yp-top)*height/float(heightinsidequad)
-      #"""
-      #draw the box for draw mode
-      
-      handle_touch(xd/float(width), yd/float(height))
-    else:
-      handle_lift()
-      pass
       
       
   #draw the cute little trapezoid over the window
