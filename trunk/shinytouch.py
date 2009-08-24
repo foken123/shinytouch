@@ -9,6 +9,7 @@ fps = 120.0
 width = 640
 height = 480
 input_type = "opencv"
+camnum = 0
 
 ########END USEFUL CONFIGURATIOn########
 
@@ -17,7 +18,7 @@ calibrate = False
 box = 10
 buildrange = False
 imsrc = "cam"
-camnum = 0
+
 
 
 canvas = Image.new("RGB", (width, height),(100,100,100))
