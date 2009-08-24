@@ -17,6 +17,7 @@ calibrate = False
 box = 10
 buildrange = False
 imsrc = "cam"
+camnum = 0
 
 
 canvas = Image.new("RGB", (width, height),(100,100,100))
@@ -27,10 +28,10 @@ touchconf = False
 if input_type == "opencv":
   import opencv #this is important for capturing/displaying images
   from opencv import highgui 
-  camera = highgui.cvCreateCameraCapture(0)
+  camera = highgui.cvCreateCameraCapture(camnum)
 elif input_type == "videocapture":
   import VideoCapture
-  camera = VideoCapture.Device()
+  camera = VideoCapture.Device(devnum=camnum)
   camera.setResolution(width,height)
 else:
   print "No Camera Input type selected!"
