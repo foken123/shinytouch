@@ -19,3 +19,12 @@ Not johnny lee's C# one, but a port to python on sourceforge. Specifically Persp
 
 === Open Sound Control ===
 This is used to support the communications protocol that powers TUIO support.
+
+=== TUIOtouch ===
+While it doesn't use any code from TUIOtouch anymore, the TUIO system that I wrote is based off looking at it.
+
+=== OpenCV ===
+Despite the powerfulness of OpenCV, I'm just using it to get webcam data. It's such an astounding underuse of the library, but I'm trying to keep the project as portable and in a sense, low-level as possible. Also, for more cross-platform-icity.
+
+=== VideoCapture ===
+For windows, VideoCapture usually works better than OpenCV (on linux, there is no VideoCapture). So you can use this to get webcam data instead as it's probably lighter and better.
