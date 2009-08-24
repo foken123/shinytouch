@@ -7,7 +7,7 @@ execfile("events.py")
 speed = FpsMeter() #set up the new fps meter
 
 def get_image(dolog = False, getpix = False):
-  global im, pix, draw, imsrc, autocal, stateframecount,switchcount, oldpix, oldim, diffmap, scantimes, input_type, speed
+  global im, pix, draw, imsrc, autocal, stateframecount, switchcount, oldpix, oldim, diffmap, scantimes, input_type, speed
   #yay for insanely large global statements
   
   #it supports opencv and videocapture for input, or a image file
@@ -97,12 +97,13 @@ def get_image(dolog = False, getpix = False):
   wp = 0
   oy = 0
   matchcount = 0
-
+  
+  #loop x axis
   for x in range(0, w):
     count = 0 #consecutive finger pixels
     #if x % 2 > 0: #this is a speed hack to skip pixels
     #  continue
-    for y in range(tr + int(ytr*x), br + int(ybr * x)):
+    for y in range(tr + int(ytr*x), br + int(ybr * x)): #loop y
       #if y % 4 > 0: #this is a speed hack to skip pixels
       #  continue
       if colorTargetMatch(pix[xe-x,y]): #detects the finger!
@@ -137,19 +138,7 @@ def get_image(dolog = False, getpix = False):
           #complexiful linear approximation algorithm that tries to fix distortion
           #only elitist people should venture to the following lines
           #pleez someone fix it!
-          """
-          xd = ((xp - xs)/float(w))*width
-          disttop = (((tr-tl)/w) * (xp-xs)) + tl
-          vwid = (bl-tl) + (((br-tr)-(bl-tl)) * ((xp - xs)/float(w)))
-          yd = ((yp - disttop)/vwid) * height
-          
-          xd = (xp-xs)*width/float(w) # x co-ordinate with distortion
-          # smallest side + top bit*x-ratio + bottom bit*x-ratio
-          top = tr + ((tl-tr)*(xd/float(width)))
-          heightinsidequad = (bl-tl) + ((tl-tr)*(xd/float(width))) + ((br-bl)*(xd/float(width)))
-          yd = (yp-top)*height/float(heightinsidequad)
-          #"""
-          
+          #erm okay, so i stole it from another elitist, so i guess that's okay.
           
           warper = Perspective()
           warper.setsrc((xs,tl),(xe,tr),(xs,bl),(xe,br))
