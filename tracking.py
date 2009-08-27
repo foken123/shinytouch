@@ -6,9 +6,9 @@ execfile("events.py")
 
 speed = FpsMeter() #set up the new fps meter
 
+##This function is what gets the image data from the input and then processes and gives an output
 def get_image(dolog = False, getpix = False):
-  global im, pix, draw, imsrc, autocal, stateframecount, switchcount, oldpix, oldim, diffmap, scantimes, input_type, speed
-  #yay for insanely large global statements
+  global im, pix, draw, imsrc, autocal, input_type, speed, mode
   
   #it supports opencv and videocapture for input, or a image file
   if imsrc == "cam":
@@ -26,75 +26,27 @@ def get_image(dolog = False, getpix = False):
     #from files are easy too
     im = Image.open(imsrc)
   
+  
+ 
   #generate a pixel grid to do pixel by pixel hacks
   pix = im.load()
   #the canvas to draw things on
   draw = ImageDraw.Draw(im)
 
-  ##########BEGIN AUTOCONFIG################
-  if switchcount == 7: 
-    #stop after seven and update config
-    get_points(width, height)
-    saveconfig()
-    switchcount += 1
-  if switchcount > 7:
-    #over seven, display the b/w grayscale purtyfullness
-    if switchcount < 100:
-      switchcount += 1
-      return diffmap
-      #display
-    else:
-      reset_calibrate()
-      #once it's over 100 frames past that, then return to normal state
-  if autocal == 1: #state 1: the white
-    stateframecount += 1
-    if stateframecount > 3:
-      if switchcount != 0:
-        if img_diff(width, height) == False:
-          switchcount -= 1
-      switchcount+=1
-      oldpix = im.load()
-      oldim = im
-      stateframecount = 0
-      autocal = 2
-    im = Image.new("RGB", (width,height), (255,255,255))
-    draw = ImageDraw.Draw(im)
-    import random
-    draw.text((random.randint(0,width-100),random.randint(0,height-20)), "Auto Calibrating. Please Wait.", fill=(0,0,0))
-    return im
-  if autocal == 2: #state 1: the black
-    stateframecount += 1
-    if stateframecount > 3:
-      if img_diff(width, height) == False:
-          switchcount -= 1
-      switchcount+=1
-      oldpix = im.load()
-      oldim = im
-      stateframecount = 0
-      autocal = 1
-    im = Image.new("RGB", (width,height), (0,0,0))
-    draw = ImageDraw.Draw(im)
-    import random
-    draw.text((random.randint(0,width-100),random.randint(0,height-20)), "Auto Calibrating. Please Wait.", fill=(255,255,255))
-    return im
-  ##########END AUTOCONFIG################
+ 
+  if autocal is not 0:
+    return calibrate_phase() #do the real magic
   
   #this is for build range mode.
   if getpix != False:
     expandTargetRange(pix[getpix[0],getpix[1]])
-    saveconfig()
+    saveconfig() #hi!
 
-    
-  #pix[xs, tl] = (100,100,255,255)
-  #pix[xs, bl] = (100,100,255,255)
-  #pix[xe, tr] = (100,100,255,255)
-  #pix[xe, br] = (100,100,255,255)
-  
 
   #where the values will be stored
   xp = 0 #the x point of contact
   yp = 0 #the y point of contact
-  wp = 0
+  #wp = 0
   oy = 0
   matchcount = 0
   
@@ -106,17 +58,17 @@ def get_image(dolog = False, getpix = False):
     for y in range(tr + int(ytr*x), br + int(ybr * x)): #loop y
       #if y % 4 > 0: #this is a speed hack to skip pixels
       #  continue
-      if colorTargetMatch(pix[xe-x,y]): #detects the finger!
+      if colorTargetMatch(pix[xe-x,y]) and count < 100: #detects the finger!
         pix[xe-x,y] = (0,255,0,255) #set a green dot on pixel
         count += 1 #increment consecutive
       else:
         #pix[xe-x,y] = (0,0,0,255)
-        if count >= 1:
+        if count >= 2:
           #print "x:",(xe-x),"y:",(y-(count/2))
           xp = xe-x
           yp = y-(count/2)
           oy = y-count
-          wp = count
+          #wp = count
           count = -1 #signal for win
           break
     if count == -1: #WIN!
