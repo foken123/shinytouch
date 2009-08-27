@@ -1,4 +1,5 @@
-max_ratio = 0.50
+max_ratio = 0.42
+min_switch = 10
 
 ##################END USEFUL CONFIGURATION#############
 
@@ -12,6 +13,58 @@ scantimes = 0
 
 diffmap = Image.new("RGB",(width,height))
 diffpix = diffmap.load()
+
+
+def calibrate_phase():
+  global im, pix, draw, imsrc, autocal, stateframecount, switchcount, oldpix, oldim, diffmap, scantimes, input_type, speed
+  #yay for insanely large global statements
+  if switchcount == min_switch: 
+    #stop after seven and update config
+    get_points(width, height)
+    saveconfig()
+    switchcount += 1
+  if switchcount > min_switch:
+    #over seven, display the b/w grayscale purtyfullness
+    if switchcount < 100:
+      switchcount += 1
+      return diffmap
+      #display
+    else:
+      reset_calibrate()
+      autocal = 0
+      return diffmap
+      #once it's over 100 frames past that, then return to normal state
+  if autocal == 1: #state 1: the white
+    stateframecount += 1
+    if stateframecount > 3:
+      if switchcount != 0:
+        if img_diff(width, height) == False:
+          switchcount -= 1
+      switchcount+=1
+      oldpix = im.load()
+      oldim = im
+      stateframecount = 0
+      autocal = 2
+    im = Image.new("RGB", (width,height), (255,255,255))
+    draw = ImageDraw.Draw(im)
+    import random
+    draw.text((random.randint(0,width-100),random.randint(0,height-20)), "Auto Calibrating. Please Wait.", fill=(0,0,0))
+    return im
+  if autocal == 2: #state 1: the black
+    stateframecount += 1
+    if stateframecount > 3:
+      if img_diff(width, height) == False:
+          switchcount -= 1
+      switchcount+=1
+      oldpix = im.load()
+      oldim = im
+      stateframecount = 0
+      autocal = 1
+    im = Image.new("RGB", (width,height), (0,0,0))
+    draw = ImageDraw.Draw(im)
+    import random
+    draw.text((random.randint(0,width-100),random.randint(0,height-20)), "Auto Calibrating. Please Wait.", fill=(255,255,255))
+    return im
 
 
 def reset_calibrate():
