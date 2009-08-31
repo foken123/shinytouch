@@ -1,9 +1,7 @@
 imv = .3
 
 testmode = "reflection"
-imsrc = "2009-07-20-102011.jpg"
-imsrc = "2009-07-20-103327.jpg"
-imsrc = "cam"
+
   
 #def colorTargetMatch(c):
 #  if c[0] < 245 and c[0] > 170: #red
