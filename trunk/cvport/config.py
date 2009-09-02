@@ -2,9 +2,10 @@
 width = 640
 height = 480
 
+# Camera Index (usually 0)
 camnum=0
+
+# Name of the HighGUI window
 window_name = "ShinyTouch"
 
-# Points to warp to
-# top left, top right, bottom right, bottom left
-warp_points = [[320,150], [385,20], [380,460], [320,370]]
+execfile("config_warp.py")
