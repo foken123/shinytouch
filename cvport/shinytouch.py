@@ -64,12 +64,12 @@ while True:
     elif mode==2: # Callibrate Mode
         frame=gfx.draw_mode(frame,"Callibrate Mode")
         frame=gfx.drawquad(frame)
-        
+
+    # Write FPS
+    frame = gfx.fps(frame, speed.go())
+    
     # Post frame to window
     cvShowImage(window_name, frame)
-
-    # Write fps
-    print speed.go()
     
     # Wait for 1ms (to stop freezing)
-    cvWaitKey(10)
+    cvWaitKey(2)

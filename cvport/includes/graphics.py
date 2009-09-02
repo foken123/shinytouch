@@ -1,10 +1,8 @@
 class Graphics:
-    def __init__(self):
-        self.font = cvInitFont (CV_FONT_HERSHEY_SIMPLEX,0.75,0.75,0,2,CV_AA)
-
     def draw_mode(self, image, mode):
         """ Draws the mode Text """
-        cvPutText(image, mode, cvPoint(5,25), self.font, cvScalar(255, 0, 0))
+        font = cvInitFont(CV_FONT_HERSHEY_SIMPLEX,0.75,0.75,0,2,CV_AA)
+        cvPutText(image, mode, cvPoint(5,25), font, cvScalar(255, 0, 0))
         return image
 
     def drawquad(self, frame):
@@ -24,4 +22,12 @@ class Graphics:
         cvLine(frame,bl,tl,red,1,CV_AA)
 
         return frame
-        
+
+    def fps(self, frame, fps):
+        """ Draws the FPS Meter """
+        global height
+        font = cvInitFont(CV_FONT_HERSHEY_SIMPLEX,0.4,0.4,0,1,CV_AA)
+        cvPutText(frame, "FPS: "+str(fps), cvPoint(5,height-10), font, cvScalar(255,255,255))
+
+        return frame
+
