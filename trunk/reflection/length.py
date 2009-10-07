@@ -8,14 +8,26 @@ def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incremente
   else:
     bgcolor = pix[x,y+15]
     pix[x,y+15] = (0,0,255)
-  targetcolor = pix[x,y]
+  targetcolor = avg_color((pix[x,y],pix[x+1,y],pix[x,y+1]))
   while hueTriDiff(pix[x+xt+xi,y+yt+yi],targetcolor,bgcolor) < 0:
     pix[x+xt,y+yt] = (255,255,255,255)
     xt += xi
     yt += yi
     if xt + x < 5 or xt + x > 630 or yt+y < 5 or yt+y > 470:
-      return yt+xt
+      return 0
+      #return yt+xt
   return yt+xt
+
+def avg_color(colors):
+  r = 0.0
+  g = 0.0
+  b = 0.0
+  for color in colors:
+    r += color[0]
+    g += color[1]
+    b += color[2]
+  l = len(colors)
+  return (r/l, g/l, b/l)
 
 def in_range(x,y,space=20):
   global width, height
@@ -28,6 +40,10 @@ def hueTriDiff(c, f, s):
   return valueTriDiff(hsv(c)[0], hsv(f)[0], hsv(s)[0])  
   
 def valueTriDiff(compare, first, second):
+  #if (first - compare) < 0 or (second - compare) < 0:
+  #  print 'compare',compare
+  #  print 'first', first
+  #  print 'sec', second
   return abs(first - compare) - abs(second - compare)
 
 
@@ -53,23 +69,27 @@ def colorTestLength(x, y, dolog = False):
     flen =  fpeak+abs(measureLength(x-xpix,fy-1,yi=-1,smarty=-30))
     slen =  speak+abs(measureLength(x+xpix,sy-1,yi=-1,smarty=-30))
     
-    newfy = fy - fpeak + (flen/2)
-    newsy = sy - speak + (slen/2)
+    newfy = fy + fpeak - (flen/2)
+    newsy = sy + speak - (slen/2)
     
     if in_range(x-xpix, newfy) and in_range(x + xpix, newsy):
-      pix[x-xpix, newfy] = (0,0,0)
-      pix[x+xpix, newsy] = (0,0,0)
-      sy = newsy
-      fy = newfy
+      pix[x-xpix, newfy] = (255,0,0)
+      pix[x+xpix, newsy] = (255,0,0)
+      if abs(sy - newsy) < 5:
+        sy = newsy
+      if abs(fy - newfy) < 5:
+        fy = newfy
+      #sy = newsy
+      #fy = newfy
       
     
     #print flen-slen
-    sumfs += abs(flen-slen)
+    sumfs += 42*(abs(flen/(slen+1))-1)
     #if abs(flen-slen) > 20:
     #  return False
   #print sumfs / abs(float(6-15))
   
-  maxfs = 7
+  maxfs = 5
   
   avgfs = sumfs / abs(float(6-15))
   
