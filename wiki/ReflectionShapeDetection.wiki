@@ -17,7 +17,8 @@ other candidates are to ignore the absolute value and instead always keep the la
 
 if the finger is at an angle too steep, there may not be 16 pixels to the immediate right of the known point of contact. The algorithm uses an automatic adjusting system for the search.
 
-{{{    fpeak = measureLength(x-xpix,fy)
+{{{
+    fpeak = measureLength(x-xpix,fy)
     speak = measureLength(x+xpix,sy)
     flen =  fpeak+abs(measureLength(x-xpix,fy-1,yi=-1,smarty=-30))
     slen =  speak+abs(measureLength(x+xpix,sy-1,yi=-1,smarty=-30))
