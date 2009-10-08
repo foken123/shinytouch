@@ -99,7 +99,7 @@ while True:
             print "Enabled Auto Transform"
         elif event.unicode == "s":
           import datetime
-          canvas.save("imgs/purty"+str(datetime.datetime.now().isoformat())+".png","PNG")
+          canvas.save("imgs/purty"+str(datetime.datetime.now().isoformat()).replace(":","-")+".png","PNG")
           print "Saved Image"
         elif event.unicode == "c":
           calibrate = True

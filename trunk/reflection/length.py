@@ -9,7 +9,7 @@ def measureLength(x,y,xi=0,yi=1,r=25,smarty=30): #start x, start y, x incremente
     bgcolor = pix[x,y+15]
     pix[x,y+15] = (0,0,255)
   targetcolor = avg_color((pix[x,y],pix[x+1,y],pix[x,y+1]))
-  while hueTriDiff(pix[x+xt+xi,y+yt+yi],targetcolor,bgcolor) < 0:
+  while hueTriDiff(pix[x+xt+xi,y+yt+yi],targetcolor,bgcolor) < -0.3:
     pix[x+xt,y+yt] = (255,255,255,255)
     xt += xi
     yt += yi
@@ -38,12 +38,12 @@ def colorTriDiff(c, f, s):
   
 def hueTriDiff(c, f, s):
   return valueTriDiff(hsv(c)[0], hsv(f)[0], hsv(s)[0])  
-  
+
+#if (first - compare) < 0 or (second - compare) < 0:
+#  print 'compare',compare
+#  print 'first', first
+#  print 'sec', second
 def valueTriDiff(compare, first, second):
-  #if (first - compare) < 0 or (second - compare) < 0:
-  #  print 'compare',compare
-  #  print 'first', first
-  #  print 'sec', second
   return abs(first - compare) - abs(second - compare)
 
 
@@ -63,7 +63,7 @@ def colorTestLength(x, y, dolog = False):
   sy = y
   fy = y
   
-  for xpix in range(6,15):
+  for xpix in range(6,6+20):
     fpeak = measureLength(x-xpix,fy)
     speak = measureLength(x+xpix,sy)
     flen =  fpeak+abs(measureLength(x-xpix,fy-1,yi=-1,smarty=-30))
@@ -75,28 +75,37 @@ def colorTestLength(x, y, dolog = False):
     if in_range(x-xpix, newfy) and in_range(x + xpix, newsy):
       pix[x-xpix, newfy] = (255,0,0)
       pix[x+xpix, newsy] = (255,0,0)
-      if abs(sy - newsy) < 5:
+      if abs(sy - newsy) < 10:
         sy = newsy
-      if abs(fy - newfy) < 5:
+      if abs(fy - newfy) < 10:
         fy = newfy
       #sy = newsy
       #fy = newfy
       
     
     #print flen-slen
-    sumfs += 42*(abs(flen/(slen+1))-1)
+    minlen = min(flen, slen)
+    maxlen = max(flen, slen)
+    if minlen != 0:
+      sumfs += 5*(20-(xpix-6))  * (maxlen/minlen - 1)
+    else:
+      sumfs += 0
+    #sumfs += 42*(abs(flen/(slen+1))-1) #basic ratio 
+    #sumfs += abs(flen-slen) #diff
+    #sumfs += (flen-slen)*(flen-slen)*0.2 #square diff
+    
     #if abs(flen-slen) > 20:
     #  return False
   #print sumfs / abs(float(6-15))
   
-  maxfs = 5
+  maxfs = 60
   
-  avgfs = sumfs / abs(float(6-15))
+  avgfs = sumfs / abs(float(20))
   
   draw.line(((150, 20), (150+avgfs, 20)), fill=(255,0,0), width=10)
   draw.line(((150+maxfs, 0), (150+maxfs, 40)), fill=(0,0,255))
   
-  if avgfs > maxfs:
+  if avgfs < maxfs:
     return False
   return True
 
