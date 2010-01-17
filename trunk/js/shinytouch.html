@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <title>ShinyTouch/JS</title>
+    <script type="text/javascript">
+      ////////////////Misc Configuration/////////////////
+      var min_target_size = 2;
+      
+      ////////////////Target Color Configuration/////////
+      
+      var tgt = {
+        r: [232,255], //red
+        g: [162,239], //green
+        b: [166,241]  //bluu
+      }
+      
+      ////////////////Quad Configuration/////////////////    
+      var quad = {
+        tl: [67,85], //top left
+        bl: [67,285], //bottom left
+        tr: [148,5], //top right
+        br: [148,290] //bottom right
+      }
+      
+      quad.left = (quad.tl[0]+quad.bl[0])/2 //take average
+      quad.right = (quad.tr[0]+quad.br[0])/2 //take average
+      quad.width = quad.right-quad.left; //width of quad
+      quad.height = quad.br[1] - quad.tr[1]
+      
+      quad.toprate = (quad.tl[1]-quad.tr[1])/quad.width //rate of top change
+      quad.bottomrate = (quad.bl[1]-quad.br[1])/quad.width //rate of down change
+      /////////////////End Quad Configuration//////////////
+      
+      function in_range(num, range){
+        return num > range[0] && num < range[1]
+      }
+      
+      function colorTargetMatch(color){
+        return in_range(color[0], tgt.r) &&
+          in_range(color[1], tgt.g) &&
+          in_range(color[2], tgt.b)
+      }
+      
+      function draw(){
+        var img = new Image();
+        img.src = 'idle.jpg'
+        /*
+        var canvas = document.getElementById('input');
+        if (canvas.getContext){
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img,0,0)
+        }*/
+        var canvas = document.getElementById('output');
+        if (canvas.getContext){
+          var ctx = canvas.getContext('2d');
+          
+          ////////////////Draw Rectangle Around Target Area///////////////
+          ctx.strokeStyle = '#0ff';
+          ctx.lineWidth   = 1;
+          ctx.drawImage(img,0,0);
+          ctx.beginPath();
+          ctx.moveTo(quad.tl[0], quad.tl[1]);
+          ctx.lineTo(quad.bl[0], quad.bl[1]);
+          ctx.lineTo(quad.br[0], quad.br[1]);
+          ctx.lineTo(quad.tr[0], quad.tr[1]);
+          ctx.lineTo(quad.tl[0], quad.tl[1]);
+          ctx.stroke();
+          ctx.closePath()
+          
+          ///////////////Scan the magical box/////////////////
+          var imgd = context.getImageData(quad.tl[0], quad.tr[1], quad.width, quad.height);
+          var pix = imgd.data;
+          for(var x = quad.right; x > quad.left; x--){
+            var matches = 0; //consecutive matches
+            for(var y = quad.tr[1] + quad.toprate*x; //start at top of quad section
+              y < quad.br[1] + quad.bottomrate * x; //end at bottom of quad section
+              y++) //increment y
+            { //start y loop
+              var index = quad.width * (x - quad.tl[0]) + (y - quad.tr[1])
+              var color = [pix[index], pix[index+1], pix[index+2]];
+              if(colorTargetMatch(color)){
+                matches++
+              }else{
+                if(matches > min_target_size){
+                  //yaay!
+                  console.log("yay",x,y)
+                  
+
+                }
+                matches = 0;
+              }
+            } //end y loop
+          } //end x loop
+          
+        }
+        setTimeout(draw, 100)
+      }
+      
+      function start(){
+        //setInterval(draw, 100);
+        draw()
+      }
+    </script>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body onload="start();">
+    <canvas id="output" width="640" height="480"></canvas>
+  </body>
+</html>
