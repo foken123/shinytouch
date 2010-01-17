@@ -1,0 +1,11 @@
+<script>
+setTimeout(function(){
+  var start = (new Date).getTime();
+  var n = 0;
+  for(var i = 0; i < 10000000; i++){
+    n += i;
+  }
+  var end = (new Date).getTime();
+  alert(end-start);
+},1000)
+</script>
